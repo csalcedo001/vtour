@@ -11,9 +11,22 @@ cd vtour
 
 ```bash
 cd app/vtour
+npm install
 npm run build
 npm link
+```
 
-cd ../ui
+To use the package locally for development:
+
+```bash
+cd path/to/your/app
 npm link vtour
+```
+
+and add components. For this example import as
+
+```typescript
+import { OnboardingStep } from 'vtour'
+
+...
 ```
