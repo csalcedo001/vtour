@@ -1,9 +1,4 @@
-import { MyData } from '../types/types'; // Adjust the path as needed
-
-const data: MyData = {
-  id: 1,
-  name: 'Example'
-};
+export { OnboardingStep } from './OnboardingStep';
 
 export const generateRandomNumber = (min: number, max: number): number => {
   // Ensure min is less than max, swap values if needed
