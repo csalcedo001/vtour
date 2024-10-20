@@ -38,8 +38,7 @@ import { useOnborda } from "onborda";
 import { useGlobalSingleton } from "@/app/global-singleton-provider";
 import { Input } from "@nextui-org/react";
 import { useComponentApis } from "@/app/component-api-provider";
-
-const AIMLAPI_API_KEY = "d6f3a75d17774b748a1945adf772c472";
+import { generateImage } from "@/app/utils";
 
 const tools = [
   {
@@ -182,33 +181,6 @@ const VirtualAssistant: React.FC = (
 
   const globalSingleton = useGlobalSingleton();
 
-  const generateImage = async () => {
-    const response = await fetch("https://api.aimlapi.com/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${AIMLAPI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "flux/schnell",
-        prompt: globalSingleton.getImagePrompt(),
-        image_size: "landscape_4_3",
-        num_inference_steps: 28,
-        guidance_scale: 3.5,
-        num_images: 1,
-        safety_tolerance: "2",
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log(`data: ${JSON.stringify(data)}`);
-
-    const imageUrl = data.images[0].url;
-
-    globalSingleton.setImageUrl(imageUrl);
-  };
-
   useEffect(() => {
     const handleToolEffect = async () => {
       if (tool === "") return;
@@ -220,7 +192,8 @@ const VirtualAssistant: React.FC = (
         return () => clearTimeout(timer);
       } else if (tool === "generate-images") {
         console.log("tool called generateImage");
-        await generateImage();
+        const img_url = await generateImage(globalSingleton.getImagePrompt());
+        globalSingleton.setImageUrl(img_url);
       }
       setTool("");
     };

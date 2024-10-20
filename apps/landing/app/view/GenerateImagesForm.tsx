@@ -10,6 +10,7 @@ import { useOnborda } from "onborda";
 import { Image, Select, SelectItem } from "@nextui-org/react";
 import { useGlobalSingleton } from "@/app/global-singleton-provider";
 import ApiReadyComponent from "@/app/api-ready-component";
+import { generateImage } from "../utils";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
@@ -48,6 +49,8 @@ const GenerateImages = ({
     OptionWithStatus[]
   >([]);
   const [description, setDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const globalSingleton = useGlobalSingleton();
 
   // Form state for Copy Style
@@ -62,6 +65,19 @@ const GenerateImages = ({
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
+
+  const handleGenerateImage = async () => {
+    setIsLoading(true);
+    try {
+      const img_url = await generateImage(globalSingleton.getImagePrompt());
+      globalSingleton.setImageUrl(img_url);
+    } catch (error) {
+      console.error("Error generating image:", error);
+      // Optionally, you can set an error state or show an error message here
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const { startOnborda } = useOnborda();
   const handleStartOnborda = () => {
@@ -226,7 +242,7 @@ const GenerateImages = ({
               )}
               {/* GENERATE IMAGE WITH PROMPT FORM */}
               {mode.id === 2 && (
-                <>
+                <div className="flex flex-col w-[250px]">
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="prompt"
@@ -249,22 +265,25 @@ const GenerateImages = ({
                       />
                     </div>
                   </div>
-                  <div className="pt-5">
-                    <div className="flex justify-start">
-                      <div className="fixed left-8 z-40 flex w-full bg-transparent">
-                        <ApiReadyComponent
-                          id="onborda-step2"
-                          docstring="Generate an image (~60s)"
-                          onPress={() => {}}
-                        >
-                          <GlowingButton>
-                            <span>Generate an image (~60s)</span>
-                          </GlowingButton>
-                        </ApiReadyComponent>
-                      </div>
-                    </div>
+                  <div className="flex p-2 mt-5">
+                    <ApiReadyComponent
+                      id="onborda-step2"
+                      docstring="Generate an image (~60s)"
+                      onPress={handleGenerateImage}
+                    >
+                      <GlowingButton
+                        onClick={handleGenerateImage}
+                        disabled={isLoading}
+                      >
+                        <span>
+                          {isLoading
+                            ? "Generating..."
+                            : "Generate an image (~60s)"}
+                        </span>
+                      </GlowingButton>
+                    </ApiReadyComponent>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>
