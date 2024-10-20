@@ -23,7 +23,7 @@ const CustomCard: React.FC<CardComponentProps> = ({
   }
 
   return (
-    <div className="border-0 rounded-3xl max-w-vw">
+    <div className="border-0 rounded-3xl max-w-vw bg-white">
       <div className="p-4">
         <div className="flex items-start justify-between w-full">
           <div>
