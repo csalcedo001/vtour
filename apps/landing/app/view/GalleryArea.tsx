@@ -19,7 +19,7 @@ const Gallery = () => {
           <div className="absolute hidden flex-col items-center justify-center group-hover:flex">
             <ArrowDownTrayIcon className="hidden h-20 w-20 text-black group-hover:block" />
             <p className="hidden text-2xl font-bold text-black group-hover:block">
-              Descargar
+              Download
             </p>
           </div>
           <div
@@ -37,7 +37,7 @@ const Gallery = () => {
       <Tab.Group as="div" defaultIndex={0}>
         <div>
           <Tab.List className="-mb-px flex space-x-8 px-4">
-            {["Ejemplos", "Tus Fotos", "Favoritas"].map((tabName) => (
+            {["Examples", "Your Photos", "Favorites"].map((tabName) => (
               <Tab
                 key={tabName}
                 className={({ selected }) =>
@@ -49,7 +49,7 @@ const Gallery = () => {
                   )
                 }
               >
-                {tabName === "Favoritas" ? (
+                {tabName === "Favorites" ? (
                   <div>
                     {tabName} <HeartIcon className="inline-block h-6 w-6" />
                   </div>
@@ -61,7 +61,7 @@ const Gallery = () => {
           </Tab.List>
         </div>
         <Tab.Panels as={Fragment}>
-          {["Ejemplos", "Tus Fotos", "Favoritas"].map((tabName) => (
+          {["Examples", "Your Photos", "Favorites"].map((tabName) => (
             <Tab.Panel key={tabName} className="py-2">
               <ImageGalleryExample
                 images={[]}
@@ -69,7 +69,7 @@ const Gallery = () => {
                 onFavorite={() => {}}
                 onDelete={() => {}}
                 onCopy={() => {}}
-                actions={tabName !== "Favoritas"}
+                actions={tabName !== "Favorites"}
               />
             </Tab.Panel>
           ))}

@@ -1,5 +1,5 @@
 "use client";
-
+import { OnboardingStep } from "vtour";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -151,7 +151,7 @@ export default function Home() {
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-gray-800">
-                      Tú
+                      You
                     </div>
                     <div className="text-sm font-medium text-gray-500">
                       {/* {userData ? userData.email : "default@email.com"} */}

@@ -7,13 +7,14 @@ import GlowingButton from "../components/GlowingButton";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import TrainModel from "./TrainModel";
 import AlertWithDismiss from "../components/AlertWithDissmiss";
+import { useOnborda } from "onborda";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
-  { id: 1, name: "Copiar estilos" },
-  { id: 2, name: "Escribe tus prompts" },
+  { id: 1, name: "Copy styles" },
+  { id: 2, name: "Write your prompts" },
   // { id: 3, name: "Diseña tu sesión de fotos" },
-  { id: 3, name: "Entrena a tu modelo 👩" },
+  { id: 3, name: "Train your model 👩" },
 ];
 
 interface GeneratedImages {
@@ -69,173 +70,11 @@ const GenerateImages = ({
   // tutorial
   const [showTutorial, setShowTutorial] = useState(false);
 
-  //   const { data } = useGetModels(
-  //     () => null,
-  //     () => null
-  //   );
-
-  //   useEffect(() => {
-  //     if (copyPrompt) {
-  //       setPrompt(copyPrompt.text);
-  //       setNegativePrompt(copyPrompt.negativeText);
-  //     }
-  //   }, [copyPrompt]);
-
-  //   useEffect(() => {
-  //     if (!data) return;
-  //     // Transform data, remove all models that don't have a model inside
-  //     // Convert to OptionWithStatus
-  //     const modelOptions = data.map((model) => ({
-  //       id: model.id,
-  //       name: model.name,
-  //       status: model.status,
-  //     }));
-  //     setPersonModelOptions(modelOptions);
-  //   }, [data]);
-
-  //   const onFileChange = async (e) => {
-  //     const files = e.target.files;
-
-  //     Array.from(files).forEach((file) => {
-  //       if (file instanceof Blob && file.size > 5) {
-  //         setFormImage(file);
-  //         formData.append("image", file);
-  //         const reader = new FileReader();
-  //         reader.onload = (e) => {
-  //           setImageToCopy({
-  //             source: e.target.result,
-  //             title: file.name,
-  //             size: file.size,
-  //           });
-  //         };
-  //         reader.readAsDataURL(file);
-  //       }
-  //     });
-  //   };
-
-  //   const handleDragOver = (e) => {
-  //     e.preventDefault();
-  //   };
-
-  //   const handleDrop = (e) => {
-  //     e.preventDefault();
-  //     const droppedFiles = e.dataTransfer.files;
-  //     onFileChange({ target: { files: droppedFiles } });
-  //   };
-
-  //   const handleDeleteImage = () => {
-  //     setImageToCopy(null);
-  //   };
-
-  //   const {
-  //     data: copiedStyle,
-  //     isLoading,
-  //     mutate,
-  //   } = useCopyStyle(
-  //     () => {
-  //       console.log("Copied style successfully");
-  //       queryClient.invalidateQueries("getImages");
-  //     },
-  //     (e: any) => {
-  //       const errorMessage =
-  //         e.response?.data?.detail?.message ||
-  //         e.response?.data?.detail ||
-  //         "An error occurred";
-  //       setAlertType("error");
-  //       setAlertMessage(errorMessage);
-  //       setShowAlert(true);
-  //       (e.response?.data?.detail as any)?.reason === "not_premium" &&
-  //         setOpenSubscribe(true);
-  //     }
-  //   );
-
-  //   const {
-  //     data: generatedImageWithPrompt,
-  //     isLoading: isLoadingGeneratedImageWithPrompt,
-  //     mutate: mutateGenerateImageWithPrompt,
-  //   } = useCreateImageWithPrompt(
-  //     () => {
-  //       console.log("Generated image with prompt successfully");
-  //       queryClient.invalidateQueries("getImages");
-  //     },
-  //     (e: any) => {
-  //       const errorMessage =
-  //         e.response?.data?.detail?.message ||
-  //         e.response?.data?.detail ||
-  //         "An error occurred";
-  //       setAlertType("error");
-  //       setAlertMessage(errorMessage);
-  //       setShowAlert(true);
-  //       (e.response?.data?.detail as any)?.reason === "not_premium" &&
-  //         setOpenSubscribe(true);
-  //     }
-  //   );
-
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-
-  //     // If Copy Style
-  //     if (mode.id === 1) {
-  //       // Validate form
-  //       if (!formImage) {
-  //         setAlertType("error");
-  //         setAlertMessage("Please upload an image");
-  //         setShowAlert(true);
-  //         return;
-  //       }
-
-  //       if (!description) {
-  //         setAlertType("error");
-  //         setAlertMessage("Please add a description");
-  //         setShowAlert(true);
-  //         return;
-  //       }
-
-  //       mutate({
-  //         image: formImage,
-  //         description,
-  //         model: personModel.id,
-  //       });
-  //     }
-
-  //     // If Create Image With Prompt
-  //     if (mode.id === 2) {
-  //       if (!prompt) {
-  //         setAlertType("error");
-  //         setAlertMessage("Please add a prompt");
-  //         setShowAlert(true);
-  //         return;
-  //       }
-  //       mutateGenerateImageWithPrompt({
-  //         prompt,
-  //         model: personModel.id,
-  //         seed,
-  //         negativePrompt,
-  //         loraScale,
-  //         promptStrength,
-  //       });
-  //     }
-
-  //     ampli.generateImage({
-  //       base_model: personModel.name,
-  //       image_description: description || prompt,
-  //     });
-
-  //     // invalidate query promptCounts
-  //     queryClient.invalidateQueries("promptCounts");
-  //   };
-
-  //   useEffect(() => {
-  //     if (!copiedStyle) return;
-  //     // Set generated images and push the previous ones
-  //     setGeneratedImages((prev) => [
-  //       {
-  //         id: copiedStyle.id,
-  //         source: `data:image/jpeg;base64,${copiedStyle?.response?.images[0]}`,
-  //       },
-  //       ...prev,
-  //     ]);
-  //   }, [copiedStyle]);
+  const { startOnborda } = useOnborda();
+  const handleStartOnborda = () => {
+    console.log("startOnborda");
+    startOnborda("tour1");
+  };
 
   return (
     <div>
@@ -254,21 +93,25 @@ const GenerateImages = ({
           <div className="flex justify-center">
             <button
               onClick={() => {
-                setShowTutorial(true);
+                // setShowTutorial(true);
+                handleStartOnborda();
               }}
               type="button"
               className="mr-2 mb-2 rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-pink-200 dark:focus:ring-pink-800"
             >
-              No sabes qué hacer? Mira el tutorial
+              Don&apos;t know what to do? Watch the tutorial
             </button>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium leading-6 text-white">
-              Genera tus imágenes
+            <h3
+              className="text-lg font-medium leading-6 text-white"
+              id="onborda-step1"
+            >
+              Generate your images
             </h3>
             <p className="mt-1 text-sm text-white">
-              Selecciona una opción y comienza a crear!
+              Select and option and start to create!
             </p>
           </div>
           <div className="pt-0">
@@ -277,8 +120,9 @@ const GenerateImages = ({
                 <label
                   htmlFor="description"
                   className="block text-sm font-medium text-white"
+                  id="onborda-step-menu-"
                 >
-                  ¿Qué quieres hacer?
+                  What do you want to do?
                 </label>
 
                 <SelectMenu
@@ -298,7 +142,7 @@ const GenerateImages = ({
                           htmlFor="description"
                           className="block text-sm font-medium text-white"
                         >
-                          Selecciona un modelo
+                          Select a model
                         </label>
                         <SelectMenuWithStatus
                           label=""
@@ -314,7 +158,7 @@ const GenerateImages = ({
                       htmlFor="copy-style"
                       className="block text-sm font-medium text-white"
                     >
-                      Arrastra o sube una imagen para copiar su estilo
+                      Drag or upload an image to copy its style
                     </label>
                     <div>
                       {/*  Image Select/Dropzone */}
@@ -410,7 +254,7 @@ const GenerateImages = ({
                           htmlFor="description"
                           className="block text-sm font-medium text-white"
                         >
-                          Selecciona un modelo
+                          Select a model
                         </label>
                         <SelectMenuWithStatus
                           label=""
@@ -426,7 +270,7 @@ const GenerateImages = ({
                       htmlFor="prompt"
                       className="block text-sm font-medium text-white"
                     >
-                      Escribe tu prompt
+                      Write your prompt
                     </label>
                     <div className="mt-1">
                       <textarea
@@ -437,7 +281,7 @@ const GenerateImages = ({
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         defaultValue={""}
                         value={prompt}
-                        placeholder="{{modelo}} con un sombrero y una camisa roja en una playa"
+                        placeholder="{{modelo}} with a hat and a red shirt on the beach"
                       />
                     </div>
                   </div>
@@ -446,7 +290,7 @@ const GenerateImages = ({
                       htmlFor="prompt"
                       className="block text-sm font-medium text-white"
                     >
-                      Escribe tu prompt negativo (opcional)
+                      Write your negative prompt (optional)
                     </label>
                     <div className="mt-1">
                       <textarea
@@ -466,7 +310,7 @@ const GenerateImages = ({
                       htmlFor="first-name"
                       className="block text-sm font-medium text-white"
                     >
-                      Seed (opcional)
+                      Seed (optional)
                     </label>
                     <div className="mt-1">
                       <input
@@ -519,7 +363,7 @@ const GenerateImages = ({
                       htmlFor="first-name"
                       className="block text-sm font-medium text-white"
                     >
-                      Fuerza del Prompt
+                      Prompt strength
                     </label>
                     <div className="mt-1">
                       <input
@@ -567,7 +411,7 @@ const GenerateImages = ({
                 //   onClick={handleSubmit}
                 //   isLoading={isLoading || isLoadingGeneratedImageWithPrompt}
                 >
-                  <span>Genera una imagen (~60s)</span>
+                  <span>Generate an image (~60s)</span>
                 </GlowingButton>
               </div>
             </div>

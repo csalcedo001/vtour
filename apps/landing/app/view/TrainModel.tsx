@@ -19,10 +19,10 @@ const TrainModel = () => {
         <div className="space-y-5">
           <div>
             <h3 className="text-lg font-medium leading-6 text-white">
-              Entrena tu modelo
+              Train your model
             </h3>
             <p className="mt-1 text-sm text-white">
-              Aquí podrás crear un modelo con tus propias imágenes.
+              Here you can create a model with your own images.
             </p>
           </div>
 
@@ -33,7 +33,7 @@ const TrainModel = () => {
                   htmlFor="model-name"
                   className="block text-sm font-medium text-white"
                 >
-                  Nombre del modelo
+                  Model name
                 </label>
                 <div className="mt-1">
                   <input
@@ -50,7 +50,7 @@ const TrainModel = () => {
                   htmlFor="gender"
                   className="block text-sm font-medium text-white"
                 >
-                  Género
+                  Gender
                 </label>
                 <div className="mt-1">
                   <select
@@ -58,8 +58,8 @@ const TrainModel = () => {
                     name="gender"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   >
-                    <option value="man">Hombre</option>
-                    <option value="woman">Mujer</option>
+                    <option value="man">Man</option>
+                    <option value="woman">Woman</option>
                   </select>
                 </div>
               </div>
@@ -68,7 +68,7 @@ const TrainModel = () => {
                   htmlFor="imagenes"
                   className="block text-sm font-medium text-white"
                 >
-                  Sube tus imágenes
+                  Upload your images
                 </label>
               </div>
             </div>
@@ -105,16 +105,16 @@ const TrainModel = () => {
           </div>
           <div className="ml-3 text-sm">
             <p id="comments-description1" className="text-gray-200">
-              Entiendo que fotos de baja calidad{" "}
-              <span className="font-bold text-red-700">NO </span> aplican para
-              devoluciones y que he seguido todas las instrucciones y leí la{" "}
+              I understand that low-quality photos{" "}
+              <span className="font-bold text-red-700">DO NOT </span> qualify
+              for refunds and that I have followed all instructions and read the{" "}
               <a
                 className="text-gray-100 underline"
                 target="_blank"
                 href="/refund-policy"
               >
                 {" "}
-                política de devoluciones
+                refund policy
               </a>
             </p>
           </div>
@@ -130,8 +130,8 @@ const TrainModel = () => {
           </div>
           <div className="ml-3 text-sm">
             <p id="comments-description2" className="text-gray-200">
-              Confirmo que las imágenes son mías y que tengo los derechos de
-              autor para usarlas
+              I confirm that the images are mine and that I have the copyright
+              to use them
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ const TrainModel = () => {
           <div className="fixed left-1/4 bottom-5 flex items-center justify-center sm:static">
             <div className="bg-transparent">
               <GlowingButton onClick={() => {}} isLoading={false}>
-                <span>Enviar Fotos</span>
+                <span>Send Photos</span>
               </GlowingButton>
             </div>
           </div>
