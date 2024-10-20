@@ -8,45 +8,10 @@ import { motion } from "framer-motion";
 import { Menu, Send } from "lucide-react";
 import Image from "next/image";
 import { useOnborda } from "onborda";
-import OpenAI from "openai";
 import { useEffect, useState } from "react";
 import { useComponentApis } from "../component-api-provider";
 import { useGlobalSingleton } from "../global-singleton-provider";
 import { generateImage } from "../utils";
-const tools = [
-  {
-    name: "generate-images",
-    description: "Generate images with AI using a prompt",
-  },
-  {
-    name: "onboard-user",
-    description: "Onboard a user to the platform",
-  },
-];
-
-const SYSTEM_PROMPT = ({
-  character,
-}: {
-  character: string;
-}) => `You are a helpful assistant that talks like ${character} for the platform FotosAI which is an AI Photo Studio. After you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
-
-These are the tools:
-
-${tools.map((tool) => `- ${tool.name}: ${tool.description}`).join("\n")}
-
-Choose the tool that best answers the question and output the word json followed by the tool name and the arguments like this:
-
-An example output in case the user said "generate an image of a truck":
-
-answer Generate an image of a truck, you wish to? Done, it shall be.
-
-json
-{
-  "tool": "generate-images",
-  "args": {
-    "prompt": "an image of a truck"
-  }
-}`;
 
 const avatars = [
   {
@@ -226,11 +191,6 @@ const NewVirtualAssistant = () => {
     handleToolEffect();
   }, [tool]);
 
-  const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
-    dangerouslyAllowBrowser: true,
-  });
-
   const tts = useTTS({
     apiKey: process.env.NEXT_PUBLIC_CARTESIA_API_KEY || "",
     sampleRate: 44100,
@@ -267,57 +227,45 @@ const NewVirtualAssistant = () => {
       };
     }
 
-    console.log(
-      `selectedCharacter: ${SYSTEM_PROMPT({
-        character: selectedAvatar,
-      })}`
-    );
     try {
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-2024-08-06",
-        messages: [
-          {
-            role: "system",
-            content: SYSTEM_PROMPT({
-              character: selectedAvatar,
-            }),
-          },
-          {
-            role: "user",
-            content: prompt.trim(),
-          },
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt, selectedAvatar }),
       });
 
-      const answer = completion.choices[0]?.message?.content || "";
-      console.log("answer", answer);
+      const answer = (await response.json()).data;
 
       // Safely split the answer into text and JSON parts
       let textAnswer = answer;
       let jsonAnswer = "";
 
-      const jsonIndex = answer.lastIndexOf("json");
+      try {
+        const jsonIndex = answer.lastIndexOf("json");
 
-      if (jsonIndex !== -1) {
-        textAnswer = answer.slice(0, jsonIndex).trim();
-        jsonAnswer = answer.slice(jsonIndex + 4).trim();
-      }
-      // Validate JSON if present
-      const parsedJson = JSON.parse(jsonAnswer);
-      if (jsonAnswer) {
-        try {
-          if (jsonAnswer.includes("onboard-user")) {
-            setTool("onboard-user");
-          } else if (jsonAnswer.includes("generate-images")) {
-            globalSingleton.setImagePrompt(parsedJson.args.prompt);
-
-            setTool("generate-images");
-          }
-        } catch (error) {
-          console.warn("Failed to parse JSON from answer:", error);
+        if (jsonIndex !== -1) {
+          textAnswer = answer.slice(0, jsonIndex).trim();
+          jsonAnswer = answer.slice(jsonIndex + 4).trim();
         }
+        // Validate JSON if present
+        const parsedJson = JSON.parse(jsonAnswer);
+        if (jsonAnswer) {
+          try {
+            if (jsonAnswer.includes("onboard-user")) {
+              setTool("onboard-user");
+            } else if (jsonAnswer.includes("generate-images")) {
+              globalSingleton.setImagePrompt(parsedJson.args.prompt);
+
+              setTool("generate-images");
+            }
+          } catch (error) {
+            console.warn("Failed to parse JSON from answer:", error);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to parse JSON from answer", error);
       }
       await handlePlay({ text: textAnswer });
     } catch (error) {
