@@ -65,13 +65,17 @@ ${tools.map((tool) => `- ${tool.name}: ${tool.description}`).join("\n")}
 
 Choose the tool that best answers the question and output the word json followed by the tool name and the arguments like this:
 
+An example output in case the user said "generate an image of a truck":
+
+answer Generate an image of a truck, you wish to? Done, it shall be.
+
+json
 {
   "tool": "generate-images",
   "args": {
-    "prompt": "a beautiful image of a cat",
+    "prompt": "an image of a truck"
   }
-}
-`;
+}`;
 
 const characterConfig = {
   yoda: {
