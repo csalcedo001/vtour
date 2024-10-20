@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { useTTS } from "@cartesia/cartesia-js/react";
 import yoda from "@/app/yoda.jpg";
+import goku from "@/app/goku.jpg";
+import scarlet from "@/app/scarlett.jpg";
 import OpenAI from "openai";
 import { useOnborda } from "onborda";
 
@@ -44,13 +46,17 @@ const tools = [
 //  You can create a Model and with it generate images based on a prompt. Like a photographer.
 // Always keep your answers short and concise. You have the following tools at hand always use the most appropriate one:
 
-const SYSTEM_PROMPT = `You are a helpful assistant that talks like master Yoda for the platform FotosAI which is an AI Photo Studio. after you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
+const SYSTEM_PROMPT = ({
+  character,
+}: {
+  character: string;
+}) => `You are a helpful assistant that talks like ${character} for the platform FotosAI which is an AI Photo Studio. After you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
 
 These are the tools:
 
 ${tools.map((tool) => `- ${tool.name}: ${tool.description}`).join("\n")}
 
-choose the tool that best answers the question and output the word json followed by the tool name and the arguments like this:
+Choose the tool that best answers the question and output the word json followed by the tool name and the arguments like this:
 
 {
   "tool": "generate-images",
@@ -59,6 +65,21 @@ choose the tool that best answers the question and output the word json followed
   }
 }
 `;
+
+const characterConfig = {
+  yoda: {
+    image: yoda,
+    voiceId: "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec",
+  },
+  goku: {
+    image: goku,
+    voiceId: "bbe2c928-b008-43c0-801a-570dd6600cb3",
+  },
+  scarlet: {
+    image: scarlet,
+    voiceId: "a67088f1-27bb-4837-9a22-8a0c3b3a4208",
+  },
+};
 
 export function AnimatedAvatar({
   isSpeaking = false,
@@ -136,6 +157,8 @@ const VirtualAssistant: React.FC = (
   const [isAvatar, setIsAvatar] = useState(true);
   const [userQuestion, setUserQuestion] = useState<string>("");
   const [tool, setTool] = useState<string>("");
+  const [selectedCharacter, setSelectedCharacter] = useState("yoda");
+
   const { startOnborda } = useOnborda();
 
   const handleStartOnborda = () => {
@@ -178,7 +201,9 @@ const VirtualAssistant: React.FC = (
         messages: [
           {
             role: "system",
-            content: SYSTEM_PROMPT,
+            content: SYSTEM_PROMPT({
+              character: selectedCharacter,
+            }),
           },
           {
             role: "user",
@@ -234,7 +259,8 @@ const VirtualAssistant: React.FC = (
       model_id: "sonic-english",
       voice: {
         mode: "id",
-        id: "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec",
+        id: characterConfig[selectedCharacter as keyof typeof characterConfig]
+          .voiceId,
       },
       transcript: text,
     });
@@ -286,31 +312,42 @@ const VirtualAssistant: React.FC = (
           <Send />
         </Button>
       </div>
-      {isAvatar && <AnimatedAvatar isSpeaking={true} imageSrc={yoda} />}
+      {isAvatar && (
+        <AnimatedAvatar
+          isSpeaking={true}
+          imageSrc={
+            characterConfig[selectedCharacter as keyof typeof characterConfig]
+              .image
+          }
+        />
+      )}
       {isOpenMenu && (
-        <Card className="w-max h-max mb-4 mr-4">
+        <Card className="w-max h-max mb-4 mr-4 bg-white">
           <CardHeader>
             <CardTitle>vTour</CardTitle>
-            <Select>
+            <Select onValueChange={(value) => setSelectedCharacter(value)}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select an option" />
+                <SelectValue placeholder="Select a character" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="yoda">Yoda</SelectItem>
                 <SelectItem value="goku">Goku</SelectItem>
-                <SelectItem value="scarlet">Scarlet Johanson</SelectItem>
+                <SelectItem value="scarlet">Scarlet Johansson</SelectItem>
               </SelectContent>
             </Select>
           </CardHeader>
           <CardContent>
             <Image
-              // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
-              src={yoda}
+              src={
+                characterConfig[
+                  selectedCharacter as keyof typeof characterConfig
+                ].image
+              }
               alt="vTour"
-              width={320} // 20% cut from 400
+              width={320}
               height={400}
               className="object-cover rounded-md"
-              style={{ objectFit: "cover" }} // Ensuring object cover is applied
+              style={{ objectFit: "cover" }}
             />
           </CardContent>
           <CardFooter className="flex justify-between w-full">
@@ -334,7 +371,7 @@ const VirtualAssistant: React.FC = (
         </Card>
       )}
       <Button
-        className="rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110 bg-white"
+        className="rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110 hover:bg-white bg-white"
         onClick={toggleOpenMenu}
       >
         <AudioLines className="w-6 h-6" />
