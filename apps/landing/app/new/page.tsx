@@ -5,11 +5,11 @@ import yoda from "@/app/yoda.jpg";
 import { useTTS } from "@cartesia/cartesia-js/react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { Menu, Send } from 'lucide-react';
-import Image from 'next/image';
+import { Menu, Send } from "lucide-react";
+import Image from "next/image";
 import { useOnborda } from "onborda";
 import OpenAI from "openai";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { useComponentApis } from "../component-api-provider";
 import { useGlobalSingleton } from "../global-singleton-provider";
 import { generateImage } from "../utils";
@@ -48,38 +48,23 @@ json
   }
 }`;
 
-const characterConfig = {
-  yoda: {
-    image: yoda,
-    voiceId: "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec",
-  },
-  goku: {
-    image: goku,
-    voiceId: "bbe2c928-b008-43c0-801a-570dd6600cb3",
-  },
-  scarlet: {
-    image: scarlett,
-    voiceId: "a67088f1-27bb-4837-9a22-8a0c3b3a4208",
-  },
-};
-
 const avatars = [
   {
-    "name": "Yoda",
-    "src": yoda,
-    "voiceId": "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec"
+    name: "Yoda",
+    src: yoda,
+    voiceId: "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec",
   },
   {
-    "name": "Goku",
-    "src": goku,
-    "voiceId": "bbe2c928-b008-43c0-801a-570dd6600cb3"
+    name: "Goku",
+    src: goku,
+    voiceId: "bbe2c928-b008-43c0-801a-570dd6600cb3",
   },
   {
-    "name": "Scarlett Johanson",
-    "src": scarlett,
-    "voiceId": "a67088f1-27bb-4837-9a22-8a0c3b3a4208"
-  }
-]
+    name: "Scarlett Johanson",
+    src: scarlett,
+    voiceId: "a67088f1-27bb-4837-9a22-8a0c3b3a4208",
+  },
+];
 
 export function AnimatedAvatar({
   isSpeaking = false,
@@ -96,15 +81,14 @@ export function AnimatedAvatar({
       animate={
         isHovered
           ? {
-            y: -20,
-            transition: { duration: 0.3 }
-          }
+              y: -20,
+              transition: { duration: 0.3 },
+            }
           : {
-            y: 0,
-            transition: { duration: 0.3 }
-          }
+              y: 0,
+              transition: { duration: 0.3 },
+            }
       }
-
     >
       <motion.div
         className="absolute inset-0 rounded-full"
@@ -123,7 +107,7 @@ export function AnimatedAvatar({
             },
           },
           idle: {
-            boxShadow: "0 0 0px 0px rgba(255, 255, 255, 0)"
+            boxShadow: "0 0 0px 0px rgba(255, 255, 255, 0)",
           },
         }}
       />
@@ -141,7 +125,17 @@ export function AnimatedAvatar({
 }
 
 // Menu section component
-const MenuSection = ({ selectedAvatar = "Yoda", setSelectedAvatar, selectedLanguage, setSelectedLanguage }: { selectedAvatar?: string, setSelectedAvatar: (avatar: string) => void, selectedLanguage: string, setSelectedLanguage: (language: string) => void }) => {
+const MenuSection = ({
+  selectedAvatar = "Yoda",
+  setSelectedAvatar,
+  selectedLanguage,
+  setSelectedLanguage,
+}: {
+  selectedAvatar?: string;
+  setSelectedAvatar: (avatar: string) => void;
+  selectedLanguage: string;
+  setSelectedLanguage: (language: string) => void;
+}) => {
   return (
     <div className="w-[400px] min-h-[200px] bg-white rounded-xl mb-5 shadow-2xl">
       {/* Header */}
@@ -152,7 +146,14 @@ const MenuSection = ({ selectedAvatar = "Yoda", setSelectedAvatar, selectedLangu
       {/* Avatar selection */}
       <div className="light px-10 py-8 flex gap-5">
         <div>
-          <Image src={avatars.find(a => a.name === selectedAvatar)?.src || avatars[0].src} alt="avatar" className="h-20 w-20 rounded-full" />
+          <Image
+            src={
+              avatars.find((a) => a.name === selectedAvatar)?.src ||
+              avatars[0].src
+            }
+            alt="avatar"
+            className="h-20 w-20 rounded-full"
+          />
         </div>
         <div className="flex-grow">
           <Select
@@ -235,7 +236,6 @@ const VirtualAssistant = () => {
     sampleRate: 44100,
   });
 
-
   const handleStartOnborda = () => {
     console.log("startOnborda");
     // startOnborda("tour1");
@@ -258,7 +258,6 @@ const VirtualAssistant = () => {
     }
   };
 
-  
   const askAssistant = async (prompt: string) => {
     // Input validation
     if (!prompt?.trim()) {
@@ -299,12 +298,13 @@ const VirtualAssistant = () => {
       let textAnswer = answer;
       let jsonAnswer = "";
 
+      await handlePlay({ text: textAnswer });
+
       const jsonIndex = answer.lastIndexOf("json");
       if (jsonIndex !== -1) {
         textAnswer = answer.slice(0, jsonIndex).trim();
         jsonAnswer = answer.slice(jsonIndex + 4).trim();
       }
-
       // Validate JSON if present
       const parsedJson = JSON.parse(jsonAnswer);
       if (jsonAnswer) {
@@ -320,8 +320,6 @@ const VirtualAssistant = () => {
           console.warn("Failed to parse JSON from answer:", error);
         }
       }
-
-      await handlePlay({ text: textAnswer });
     } catch (error) {
       // Proper error handling
       const errorMessage =
@@ -363,8 +361,9 @@ const VirtualAssistant = () => {
       model_id: "sonic-english",
       voice: {
         mode: "id",
-        id: characterConfig[selectedAvatar as keyof typeof characterConfig]
-          .voiceId,
+        id:
+          avatars.find((a) => a.name === selectedAvatar)?.voiceId ||
+          avatars[0].voiceId,
       },
       transcript: text,
     });
@@ -373,74 +372,82 @@ const VirtualAssistant = () => {
     await tts.play();
   };
 
-
-
   return (
-    <div className='relative w-full h-full dark'>
-        <div>
-          <Input
-            className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
-            classNames={{
-              base: "max-w-full sm:max-w-[40rem] h-12",
-              mainWrapper: "h-full",
-              input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-              inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-            }}
-            placeholder="Set your prompt here..."
-            size="sm"
-            variant="flat"
-            isClearable={false}
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            endContent={
-              <Button isIconOnly variant="solid" color="default" onClick={handleSendMessage}>
-                <Send strokeWidth={1.5} />
-              </Button>
-            }
-          />
-        </div>
+    <div className="relative w-full h-full dark">
+      <div>
+        <Input
+          className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
+          classNames={{
+            base: "max-w-full sm:max-w-[40rem] h-12",
+            mainWrapper: "h-full",
+            input:
+              "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+            inputWrapper:
+              "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+          }}
+          placeholder="Set your prompt here..."
+          size="sm"
+          variant="flat"
+          isClearable={false}
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          onKeyPress={handleKeyPress}
+          endContent={
+            <Button
+              isIconOnly
+              variant="solid"
+              color="default"
+              onClick={handleSendMessage}
+            >
+              <Send strokeWidth={1.5} />
+            </Button>
+          }
+        />
+      </div>
       <div
-        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4'
+        className="fixed bottom-5 right-5 flex flex-col items-end -space-y-4"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {
-          isMenuVisible ? (
-            <MenuSection
-              selectedAvatar={selectedAvatar}
-              setSelectedAvatar={setSelectedAvatar}
-              selectedLanguage={selectedLanguage}
-              setSelectedLanguage={setSelectedLanguage}
-            />
-          ) : (
-            <AnimatedAvatar
-              imageSrc={avatars.find(a => a.name === selectedAvatar)?.src || avatars[0].src}
-              isSpeaking={true}
-              isHovered={isButtonVisible}
-            />
-          )
-        }
+        {isMenuVisible ? (
+          <MenuSection
+            selectedAvatar={selectedAvatar}
+            setSelectedAvatar={setSelectedAvatar}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+          />
+        ) : (
+          <AnimatedAvatar
+            imageSrc={
+              avatars.find((a) => a.name === selectedAvatar)?.src ||
+              avatars[0].src
+            }
+            isSpeaking={true}
+            isHovered={isButtonVisible}
+          />
+        )}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{
             opacity: isButtonVisible ? 1 : 0,
             scale: isButtonVisible ? 1 : 0.8,
-            y: isButtonVisible ? 0 : 20
+            y: isButtonVisible ? 0 : 20,
           }}
           transition={{
             duration: 0.3,
-            ease: "easeOut"
+            ease: "easeOut",
           }}
         >
           <Button
-            onClick={() => { setIsMenuVisible(!isMenuVisible) }}
-            className='rounded-full bg-gray-200'
+            onClick={() => {
+              setIsMenuVisible(!isMenuVisible);
+            }}
+            className="rounded-full bg-gray-200"
             variant="solid"
             isIconOnly
           >
-            <Menu className='text-black' size={15} />
+            <Menu className="text-black" size={15} />
           </Button>
         </motion.div>
       </div>
@@ -450,8 +457,10 @@ const VirtualAssistant = () => {
 
 const Page = () => {
   return (
-    <div className='min-h-screen w-full bg-white'>
-      <h1 className="text-3xl font-bold text-center py-8">Welcome to Virtual Assistant</h1>
+    <div className="min-h-screen w-full bg-white">
+      <h1 className="text-3xl font-bold text-center py-8">
+        Welcome to Virtual Assistant
+      </h1>
       <VirtualAssistant />
     </div>
   );
