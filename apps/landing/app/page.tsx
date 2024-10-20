@@ -11,10 +11,7 @@ function classNames(...classes: string[]) {
 export default function Home() {
   return (
     <div>
-      <Disclosure
-        as="nav"
-        className="fixed top-0 left-0 right-0 z-10 border-b border-gray-200 bg-black"
-      >
+      <Disclosure as="nav" className="fixed top-0 left-0 right-0 bg-black">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -183,7 +180,7 @@ export default function Home() {
         )}
       </Disclosure>
       <main>
-        <div className="relative mt-16 flex min-h-screen w-full flex-col bg-black">
+        <div className="relative mt-16 flex min-h-screen w-full flex-col bg-black border-t-2 border-gray-200">
           {/* 3 column wrapper */}
           <div className="w-full flex-grow lg:flex lg:px-10">
             {/* Left sidebar & main wrapper */}
