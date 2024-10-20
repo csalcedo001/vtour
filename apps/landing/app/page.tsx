@@ -3,7 +3,7 @@
 import { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import VirtualAssistant from "@/app/components/VirtualAssistant";
+import VirtualAssistant from "@/app/components/NewVirtualAssistant";
 import GenerateImagesForm from "./view/GenerateImagesForm";
 import { Image } from "@nextui-org/react";
 import { useGlobalSingleton } from "@/app/global-singleton-provider";
