@@ -1,14 +1,17 @@
 "use client";
-import { Fragment, useEffect } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { BellIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+
+import {Fragment, useEffect} from "react";
+import {Disclosure, Menu, Transition} from "@headlessui/react";
+import {BellIcon, Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import VirtualAssistant from "@/app/components/VirtualAssistant";
 import GenerateImagesForm from "./view/GenerateImagesForm";
-import GalleryArea from "./view/GalleryArea";
-import Image from "next/image";
+import {Image} from "@nextui-org/react";
+import {useGlobalSingleton} from "@/app/global-singleton-provider";
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+
 export default function Home() {
   useEffect(() => {
     fetch("/api/hello")
@@ -18,10 +21,12 @@ export default function Home() {
       });
   }, []);
 
+  const globalSingleton = useGlobalSingleton();
+
   return (
     <div>
       <Disclosure as="nav" className="fixed top-0 left-0 right-0 bg-black">
-        {({ open }) => (
+        {({open}) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 justify-between">
@@ -67,7 +72,8 @@ export default function Home() {
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      <Menu.Button
+                        className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="sr-only">Open user menu</span>
                         {/* <Gravatar
                     className="h-8 w-8 rounded-full"
@@ -88,11 +94,15 @@ export default function Home() {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {[{ name: "Logout", onClick: () => {}, href: "/" }].map(
+                      <Menu.Items
+                        className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {[{
+                          name: "Logout", onClick: () => {
+                          }, href: "/"
+                        }].map(
                           (item) => (
                             <Menu.Item key={item.name}>
-                              {({ active }) => (
+                              {({active}) => (
                                 <a
                                   href={item.href}
                                   className={classNames(
@@ -113,12 +123,13 @@ export default function Home() {
                 </div>
                 <div className="-mr-2 flex items-center sm:hidden">
                   {/* Mobile menu button */}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  <Disclosure.Button
+                    className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                      <XMarkIcon className="block h-6 w-6" aria-hidden="true"/>
                     ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                      <Bars3Icon className="block h-6 w-6" aria-hidden="true"/>
                     )}
                   </Disclosure.Button>
                 </div>
@@ -127,7 +138,7 @@ export default function Home() {
 
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-1 pt-2 pb-3">
-                {[{ name: "Home", href: "/", current: true }].map((item) => (
+                {[{name: "Home", href: "/", current: true}].map((item) => (
                   <Disclosure.Button
                     key={item.name}
                     as="a"
@@ -168,11 +179,14 @@ export default function Home() {
                     className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
                     <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    <BellIcon className="h-6 w-6" aria-hidden="true"/>
                   </button>
                 </div>
                 <div className="mt-3 space-y-1">
-                  {[{ name: "Logout", onClick: () => {} }].map((item) => (
+                  {[{
+                    name: "Logout", onClick: () => {
+                    }
+                  }].map((item) => (
                     <Disclosure.Button
                       key={item.name}
                       as="a"
@@ -191,23 +205,24 @@ export default function Home() {
       <main>
         <div className="relative mt-16 flex min-h-screen w-full flex-col bg-black border-t-2 border-gray-200">
           {/* 3 column wrapper */}
-          <div className="w-full flex-grow lg:flex lg:px-10">
+          <div className="w-full flex flex-row lg:flex lg:px-10">
             {/* Left sidebar & main wrapper */}
-            <div className="min-w-0 flex-1 bg-white xl:flex">
-              <div className="border-b border-gray-200 bg-black xl:w-80 xl:flex-shrink-0 xl:border-b-0 xl:border-r xl:border-gray-200">
+            <div className="flex flex-row w-full min-w-0 flex-1 bg-white xl:flex">
+              <div
+                className="border-b border-gray-200 bg-black xl:w-80 xl:flex-shrink-0 xl:border-b-0 xl:border-r xl:border-gray-200">
                 <div className="h-full overflow-y-auto py-6 pl-4 pr-6 sm:pl-6 lg:pl-8 xl:pl-0">
                   {/* Start left column area */}
                   <div className="relative h-full">
                     {/* <div className="absolute inset-0 rounded-lg border-2 border-dashed border-gray-200" /> */}
                     <div className="flex items-center justify-between">
                       <GenerateImagesForm
-                      // imageToCopy={imageToCopy}
-                      // setImageToCopy={setImageToCopy}
-                      // formImage={formImage}
-                      // setFormImage={setFormImage}
-                      // description={description}
-                      // setDescription={setDescription}
-                      // copyPrompt={prompt}
+                        // imageToCopy={imageToCopy}
+                        // setImageToCopy={setImageToCopy}
+                        // formImage={formImage}
+                        // setFormImage={setFormImage}
+                        // description={description}
+                        // setDescription={setDescription}
+                        // copyPrompt={prompt}
                       />
                     </div>
                   </div>
@@ -215,23 +230,20 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-black lg:min-w-0 lg:flex-1">
-                <div className="h-full px-4 sm:px-6 lg:px-8">
-                  {/* Start main area*/}
-                  <div
-                    className="relative h-full"
-                    style={{ minHeight: "36rem" }}
-                  >
-                    {/* <div className="absolute inset-0 rounded-lg border-2 border-dashed border-gray-200" /> */}
-                    <GalleryArea />
-                  </div>
-                  {/* End main area */}
+              <div className="max-w-full w-full">
+                <div className="max-w-2xl">
+                <Image src={globalSingleton.getImageUrl()} width="300" height="200" style={{
+                  opacity: "100%",
+                  width: "100%",
+                  height: "100%",
+                }}/>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
-        <VirtualAssistant />
+        <VirtualAssistant/>
       </main>
     </div>
   );

@@ -1,4 +1,8 @@
 "use client";
+
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -31,6 +35,9 @@ import goku from "@/app/goku.jpg";
 import scarlet from "@/app/scarlett.jpg";
 import OpenAI from "openai";
 import { useOnborda } from "onborda";
+import {useGlobalSingleton} from "@/app/global-singleton-provider";
+
+const AIMLAPI_API_KEY = "d6f3a75d17774b748a1945adf772c472";
 
 const tools = [
   {
@@ -166,6 +173,37 @@ const VirtualAssistant: React.FC = (
     startOnborda("tour1");
   };
 
+  const globalSingleton = useGlobalSingleton();
+
+  const generateImage = async () => {
+    const response = await fetch("https://api.aimlapi.com/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AIMLAPI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "flux/schnell",
+        prompt: globalSingleton.getImagePrompt(),
+        image_size: "landscape_4_3",
+        num_inference_steps: 28,
+        guidance_scale: 3.5,
+        num_images: 1,
+        safety_tolerance: "2",
+      }),
+    });
+
+    console.log(`token: ${process.env.AIMLAPI_API_KEY}`)
+
+    const data = await response.json();
+
+    console.log(`data: ${JSON.stringify(data)}`);
+
+    const imageUrl = data.images[0].url;
+
+    globalSingleton.setImageUrl(imageUrl);
+  }
+
   useEffect(() => {
     if (tool === "onboard-user") {
       const timer = setTimeout(() => {
@@ -173,6 +211,8 @@ const VirtualAssistant: React.FC = (
       }, 1000);
 
       return () => clearTimeout(timer);
+    } else if (tool === "generate-images") {
+      void generateImage();
     }
   }, [tool]);
 
@@ -228,11 +268,16 @@ const VirtualAssistant: React.FC = (
       }
 
       // Validate JSON if present
-      // let parsedJson = null;
+      const parsedJson = JSON.parse(jsonAnswer);
+
       if (jsonAnswer) {
         try {
           if (jsonAnswer.includes("onboard-user")) {
             setTool("onboard-user");
+          } else if (jsonAnswer.includes("generate-images")) {
+            globalSingleton.setImagePrompt(parsedJson.args.prompt);
+
+            setTool("generate-images");
           }
         } catch (error) {
           console.warn("Failed to parse JSON from answer:", error);

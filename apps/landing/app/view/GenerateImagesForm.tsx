@@ -1,13 +1,14 @@
-import ImageGallery from "../components/ImageGallery";
 import SelectMenuWithStatus from "../components/SelectMenuWithStatus";
 import type { OptionWithStatus } from "../components/SelectMenuWithStatus";
 import SelectMenu from "../components/SelectMenu";
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import GlowingButton from "../components/GlowingButton";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import TrainModel from "./TrainModel";
 import AlertWithDismiss from "../components/AlertWithDissmiss";
 import { useOnborda } from "onborda";
+import {Image} from "@nextui-org/react";
+import {useGlobalSingleton} from "@/app/global-singleton-provider";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
@@ -45,30 +46,21 @@ const GenerateImages = ({
   const [personModelOptions, setPersonModelOptions] = useState<
     OptionWithStatus[]
   >([]);
-  const [formData, setFormData] = useState(new FormData());
-  const [generatedImages, setGeneratedImages] = useState<GeneratedImages[]>([]);
   const [description, setDescription] = useState("");
+  const globalSingleton = useGlobalSingleton();
 
   // Form state for Copy Style
   const [personModel, setPersonModel] = useState<OptionWithStatus>(null);
 
   // Form state for Create Image With Prompt
-  const [prompt, setPrompt] = useState("");
-  const [negativePrompt, setNegativePrompt] = useState("");
-  const [seed, setSeed] = useState(null);
-  const [loraScale, setLoraScale] = useState(0.85);
+  const [seed, setSeed] = useState<number>(0);
+  const [loraScale, setLoraScale] = useState<number>(0.85);
   const [promptStrength, setPromptStrength] = useState(0.8);
 
   // Notifications
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
-
-  // payment
-  const [openSubscribe, setOpenSubscribe] = useState(false);
-
-  // tutorial
-  const [showTutorial, setShowTutorial] = useState(false);
 
   const { startOnborda } = useOnborda();
   const handleStartOnborda = () => {
@@ -177,7 +169,7 @@ const GenerateImages = ({
                               />
                             </button>
                           </div>
-                          <ImageGallery files={[imageToCopy]} />
+                          {/*<ImageGallery files={[imageToCopy]} />*/}
                         </div>
                       ) : (
                         <div
@@ -277,10 +269,10 @@ const GenerateImages = ({
                         rows={4}
                         name="text"
                         id="text"
-                        // onChange={(e) => setPrompt(e.target.value)}
+                        onChange={(e) => globalSingleton.setImagePrompt(e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        // defaultValue={""}
-                        // value={prompt}
+                        defaultValue={""}
+                        value={globalSingleton.getImagePrompt()}
                         placeholder="{{modelo}} with a hat and a red shirt on the beach"
                       />
                     </div>
@@ -314,9 +306,9 @@ const GenerateImages = ({
                     </label>
                     <div className="mt-1">
                       <input
-                        type="text"
-                        // onChange={(e) => setSeed(e.target.value)}
-                        // value={seed}
+                        type="number"
+                        onChange={(e) => setSeed(parseInt(e.target.value))}
+                        value={seed}
                         name="seed"
                         id="seed"
                         defaultValue={"-1"}
@@ -340,7 +332,6 @@ const GenerateImages = ({
                         name="lora-input"
                         id="lora-input"
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        // defaultValue={0.85}
                         value={loraScale}
                         onChange={(e) => setLoraScale(Number(e.target.value))}
                       />
@@ -353,7 +344,7 @@ const GenerateImages = ({
                         // defaultValue={0.85}
                         value={loraScale}
                         onChange={(e) => setLoraScale(Number(e.target.value))}
-                        step="0.01"
+                        step={0.01}
                         className="h-3 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
                       />
                     </div>
@@ -374,7 +365,6 @@ const GenerateImages = ({
                         max="1"
                         step={0.01}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        // defaultValue={0.8}
                         value={promptStrength}
                         onChange={(e) =>
                           setPromptStrength(Number(e.target.value))
