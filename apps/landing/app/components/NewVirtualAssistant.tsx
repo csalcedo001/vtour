@@ -223,7 +223,7 @@ const NewVirtualAssistant = () => {
     }
   };
 
-  const askAssistant = async (prompt: string) => {
+  const askAssistant = async (prompt: string, platform: string) => {
     // Input validation
     if (!prompt?.trim()) {
       return {
@@ -238,7 +238,7 @@ const NewVirtualAssistant = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt, selectedAvatar }),
+        body: JSON.stringify({ prompt, selectedAvatar, platform }),
       });
 
       const answer = (await response.json()).data;
@@ -299,7 +299,7 @@ const NewVirtualAssistant = () => {
       const question = userInput;
       handleSendMessage();
       setUserInput(""); // Clear the question after asking
-      await askAssistant(question);
+      await askAssistant(question, 'Tavus');
     }
   };
 

@@ -18,9 +18,11 @@ const tools = [
 
 const SYSTEM_PROMPT = ({
   character,
+  platform,
 }: {
   character: string;
-}) => `You are a helpful assistant that talks like ${character} for the platform FotosAI which is an AI Photo Studio. After you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
+  platform: string;
+}) => `You are a helpful assistant that talks like ${character} for the platform ${platform}. After you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
   
   These are the tools:
   
@@ -41,7 +43,7 @@ const SYSTEM_PROMPT = ({
   }`;
 
 export async function POST(req: NextRequest) {
-  const { prompt, selectedAvatar } = await req.json();
+  const { prompt, platform, selectedAvatar } = await req.json();
   try {
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-4o-2024-08-06",
@@ -50,6 +52,7 @@ export async function POST(req: NextRequest) {
           role: "system",
           content: SYSTEM_PROMPT({
             character: selectedAvatar,
+            platform: platform,
           }),
         },
         {
