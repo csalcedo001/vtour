@@ -14,14 +14,6 @@ function classNames(...classes: string[]) {
 }
 
 export default function Home() {
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("hello world", data);
-      });
-  }, []);
-
   const globalSingleton = useGlobalSingleton();
 
   return (
