@@ -1,9 +1,11 @@
 import {createContext, useContext, useRef, useCallback, ReactNode} from 'react';
 
 interface ComponentApiContextType {
-  registerComponent: (id: string, docstring: string, onPress: () => void) => void;
+  registerComponent: (id: string, docstring: string, onPress: () => void, ref: React.RefObject<HTMLDivElement>) => void; // Updated signature
+  unregisterComponent: (id: string) => void;
   clickComponent: (id: string) => void;
   getComponentApiDescription: () => { [key: string]: string };
+  goToComponent: (id: string) => void; // Ensure this is included
 
   /**
    * Executes an instruction.
@@ -37,14 +39,20 @@ interface ComponentApiContextType {
 const ComponentApiContext = createContext<ComponentApiContextType | undefined>(undefined);
 
 export function ComponentApiProvider({children}: { children: ReactNode }) {
-  const componentsRef = useRef<Record<string, { docstring: string, callback: () => void }>>({});
+  const componentsRef = useRef<Record<string, { docstring: string, callback: () => void, ref: React.RefObject<HTMLDivElement> }>>({});
 
   // Function to register a component
-  const registerComponent = useCallback((id: string, docstring: string, onPress: () => void) => {
+  const registerComponent = useCallback((id: string, docstring: string, onPress: () => void, ref: React.RefObject<HTMLDivElement>) => {
     componentsRef.current[id] = {
       docstring: docstring,
       callback: onPress,
+      ref: ref
     }
+  }, []);
+
+  // Function to unregister a component
+  const unregisterComponent = useCallback((id: string) => {
+    delete componentsRef.current[id];
   }, []);
 
   // Function to click a registered component
@@ -64,6 +72,12 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     return documentation;
   }, []);
 
+  const goToComponent = useCallback((id: string) => {
+    if (componentsRef.current[id] && componentsRef.current[id].ref.current) {
+      componentsRef.current[id].ref.current.focus();
+    }
+  }, []);
+
   // instruction parsing and execution logic
   const executeInstruction = useCallback((instruction: string) => {
     instruction = instruction.trim();
@@ -77,7 +91,14 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
 
   return (
     <ComponentApiContext.Provider
-      value={{registerComponent, clickComponent, getComponentApiDescription, executeInstruction}}>
+    value={{
+      registerComponent,
+      unregisterComponent,
+      clickComponent,
+      getComponentApiDescription,
+      executeInstruction,
+      goToComponent, // Include the new function in the context value
+    }}>
       {children}
     </ComponentApiContext.Provider>
   );

@@ -42,16 +42,29 @@ increment-counter`
   return (
     <div className="flex flex-col items-center space-y-4">
       <div className="flex flex-row justify-center items-center space-x-4">
-        <Button onPress={programmaticallyIncrementCounter}>
-          Programmatically increment counter 5 times by executing instructions
-        </Button>
-        <Button onPress={retrieveAndShowApiDescription}>
-          Retrieve and show API descriptions
-        </Button>
+        <ApiReadyComponent
+          id="increment-counter-by-5"
+          docstring="Programatically increments counter by 5"
+          onPress={incrementCounter}
+        >
+          <Button onPress={programmaticallyIncrementCounter}>
+            Programmatically increment counter 5 times by executing instructions
+          </Button>
+        </ApiReadyComponent>
+
+        <ApiReadyComponent
+          id="api-description"
+          docstring="Retrieve and show API descriptions"
+          onPress={incrementCounter}
+        >
+          <Button onPress={retrieveAndShowApiDescription}>
+            Retrieve and show API descriptions
+          </Button>
+        </ApiReadyComponent>
       </div>
       <div className="flex flex-row justify-center items-center space-x-4">
         <ApiReadyComponent
-          id={"increment-counter"}
+          id="increment-counter"
           docstring="Increments the counter by 1"
           onPress={incrementCounter}
         >
@@ -66,6 +79,18 @@ increment-counter`
         {
           docs && <p>{docs}</p>
         }
+      </div>
+
+      <div className='flex flex-row gap-3'>
+        <Button onPress={() => componentApis.goToComponent('increment-counter')}>
+          Go To increment-counter
+        </Button>
+        <Button onPress={() => componentApis.goToComponent('increment-counter-by-5')}>
+          Go To increment-counter-by-5
+        </Button>
+        <Button onPress={() => componentApis.goToComponent('api-description')}>
+          Go To api-descriptions
+        </Button>
       </div>
     </div>
   );
