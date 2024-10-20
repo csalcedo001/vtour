@@ -191,15 +191,31 @@ const VirtualAssistant: React.FC = (
     error?: Error;
   }
 
+  const handleAskAssistant = async () => {
+    if (userQuestion.trim()) {
+      const question = userQuestion;
+      setUserQuestion(""); // Clear the question after asking
+      await askAssistant(question);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAskAssistant();
+    }
+  };
+
   return (
     <div className="fixed bottom-0 z-50 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4">
-      <div className="flex flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
+      <div className="flex items-center gap-3 flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
         <input
           className="w-full outline-none"
           placeholder="Ask any question to the assistant!"
           onChange={(e) => setUserQuestion(e.target.value)}
+          onKeyPress={handleKeyPress}
+          value={userQuestion}
         />
-        <Button onClick={() => askAssistant(userQuestion)}>
+        <Button className="bg-white" onClick={handleAskAssistant}>
           <Send />
         </Button>
       </div>
@@ -251,7 +267,7 @@ const VirtualAssistant: React.FC = (
         </Card>
       )}
       <Button
-        className="rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110"
+        className="rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110 bg-white"
         onClick={toggleOpenMenu}
       >
         <AudioLines className="w-6 h-6" />
