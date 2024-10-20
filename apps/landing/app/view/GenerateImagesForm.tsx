@@ -71,16 +71,6 @@ const GenerateImages = (
 
   return (
     <div>
-      <div className="fixed bottom-0 left-0 z-50 p-4">
-        <AlertWithDismiss
-          message={alertMessage}
-          show={showAlert}
-          type={alertType}
-          onClose={() => {
-            setShowAlert(false);
-          }}
-        />
-      </div>
       <div className="space-y-5">
         <div className="space-y-5">
           <div className="flex justify-center">
@@ -279,27 +269,23 @@ const GenerateImages = (
                       />
                     </div>
                   </div>
+                  <div className="pt-5">
+                    <div className="flex justify-start">
+                      <div className="fixed left-8 z-40 flex w-full bg-transparent">
+                        <GlowingButton
+                          id="onborda-step2"
+                        >
+
+                          <span>Generate an image (~60s)</span>
+                        </GlowingButton>
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
-              {/* TRAIN YOUR MODEL */}
-              {mode.id === 3 && <TrainModel/>}
             </div>
           </div>
         </div>
-        {mode.id !== 3 ? (
-          <div className="pt-5">
-            <div className="flex justify-start">
-              <div className="fixed left-8 bottom-5 z-40 flex w-full bg-transparent">
-                <GlowingButton
-                  id="onborda-step2"
-                >
-
-                  <span>Generate an image (~60s)</span>
-                </GlowingButton>
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
     </div>
   );
