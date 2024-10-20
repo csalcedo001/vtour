@@ -35,8 +35,8 @@ import goku from "@/app/goku.jpg";
 import scarlet from "@/app/scarlett.jpg";
 import OpenAI from "openai";
 import { useOnborda } from "onborda";
-import {useGlobalSingleton} from "@/app/global-singleton-provider";
-import {Input} from "@nextui-org/react";
+import { useGlobalSingleton } from "@/app/global-singleton-provider";
+import { Input } from "@nextui-org/react";
 
 const AIMLAPI_API_KEY = "d6f3a75d17774b748a1945adf772c472";
 
@@ -198,8 +198,6 @@ const VirtualAssistant: React.FC = (
       }),
     });
 
-    console.log(`token: ${process.env.AIMLAPI_API_KEY}`)
-
     const data = await response.json();
 
     console.log(`data: ${JSON.stringify(data)}`);
@@ -207,18 +205,25 @@ const VirtualAssistant: React.FC = (
     const imageUrl = data.images[0].url;
 
     globalSingleton.setImageUrl(imageUrl);
-  }
+  };
 
   useEffect(() => {
-    if (tool === "onboard-user") {
-      const timer = setTimeout(() => {
-        handleStartOnborda();
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    } else if (tool === "generate-images") {
-      void generateImage();
-    }
+    const handleToolEffect = async () => {
+      if (tool === "") return;
+      if (tool === "onboard-user") {
+        const timer = setTimeout(() => {
+          handleStartOnborda();
+        }, 1000);
+        setTool("");
+        return () => clearTimeout(timer);
+      } else if (tool === "generate-images") {
+        console.log("tool called generateImage");
+        await generateImage();
+      }
+      setTool("");
+    };
+    console.log(`effecttool: ${tool}`);
+    handleToolEffect();
   }, [tool]);
 
   const openai = new OpenAI({
@@ -240,6 +245,11 @@ const VirtualAssistant: React.FC = (
       };
     }
 
+    console.log(
+      `selectedCharacter: ${SYSTEM_PROMPT({
+        character: selectedCharacter,
+      })}`
+    );
     try {
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-2024-08-06",
@@ -274,7 +284,6 @@ const VirtualAssistant: React.FC = (
 
       // Validate JSON if present
       const parsedJson = JSON.parse(jsonAnswer);
-
       if (jsonAnswer) {
         try {
           if (jsonAnswer.includes("onboard-user")) {

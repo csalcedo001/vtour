@@ -1,21 +1,21 @@
 import SelectMenuWithStatus from "../components/SelectMenuWithStatus";
-import type {OptionWithStatus} from "../components/SelectMenuWithStatus";
+import type { OptionWithStatus } from "../components/SelectMenuWithStatus";
 import SelectMenu from "../components/SelectMenu";
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import GlowingButton from "../components/GlowingButton";
-import {XCircleIcon} from "@heroicons/react/24/solid";
+import { XCircleIcon } from "@heroicons/react/24/solid";
 import TrainModel from "./TrainModel";
 import AlertWithDismiss from "../components/AlertWithDissmiss";
-import {useOnborda} from "onborda";
-import {Image, Select, SelectItem} from "@nextui-org/react";
-import {useGlobalSingleton} from "@/app/global-singleton-provider";
+import { useOnborda } from "onborda";
+import { Image, Select, SelectItem } from "@nextui-org/react";
+import { useGlobalSingleton } from "@/app/global-singleton-provider";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
-  {id: 1, name: "Copy styles"},
-  {id: 2, name: "Write your prompts"},
+  { id: 1, name: "Copy styles" },
+  { id: 2, name: "Write your prompts" },
   // { id: 3, name: "Diseña tu sesión de fotos" },
-  {id: 3, name: "Train your model 👩"},
+  { id: 3, name: "Train your model 👩" },
 ];
 
 interface GeneratedImages {
@@ -33,16 +33,15 @@ interface GenerateImagesProps {
   copyPrompt?: null;
 }
 
-const GenerateImages = (
-  {
-    imageToCopy,
-    setImageToCopy,
-    formImage,
-    setFormImage,
-    //   description,
-    //   setDescription,
-    copyPrompt,
-  }: GenerateImagesProps) => {
+const GenerateImages = ({
+  imageToCopy,
+  setImageToCopy,
+  formImage,
+  setFormImage,
+  //   description,
+  //   setDescription,
+  copyPrompt,
+}: GenerateImagesProps) => {
   const [mode, setMode] = useState(options[1]);
   const [personModelOptions, setPersonModelOptions] = useState<
     OptionWithStatus[]
@@ -63,7 +62,7 @@ const GenerateImages = (
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
 
-  const {startOnborda} = useOnborda();
+  const { startOnborda } = useOnborda();
   const handleStartOnborda = () => {
     console.log("startOnborda");
     startOnborda("tour1");
@@ -87,9 +86,7 @@ const GenerateImages = (
           </div>
 
           <div>
-            <h3
-              className="text-lg font-medium leading-6 text-white"
-            >
+            <h3 className="text-lg font-medium leading-6 text-white">
               Generate your images
             </h3>
             <p className="mt-1 text-sm text-white">
@@ -241,41 +238,20 @@ const GenerateImages = (
                         id="onborda-step1"
                         rows={4}
                         name="text"
-                        onChange={(e) => globalSingleton.setImagePrompt(e.target.value)}
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        onChange={(e) =>
+                          globalSingleton.setImagePrompt(e.target.value)
+                        }
+                        className="block w-full bg-black text-white rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         defaultValue={""}
                         value={globalSingleton.getImagePrompt()}
                         placeholder="{{modelo}} with a hat and a red shirt on the beach"
                       />
                     </div>
                   </div>
-                  <div className="sm:col-span-3">
-                    <label
-                      htmlFor="prompt"
-                      className="block text-sm font-medium text-white"
-                    >
-                      Write your negative prompt (optional)
-                    </label>
-                    <div className="mt-1">
-                      <textarea
-                        rows={4}
-                        name="text"
-                        id="text"
-                        // onChange={(e) => setNegativePrompt(e.target.value)}
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        // defaultValue={""}
-                        // value={negativePrompt}
-                        placeholder=""
-                      />
-                    </div>
-                  </div>
                   <div className="pt-5">
                     <div className="flex justify-start">
                       <div className="fixed left-8 z-40 flex w-full bg-transparent">
-                        <GlowingButton
-                          id="onborda-step2"
-                        >
-
+                        <GlowingButton id="onborda-step2">
                           <span>Generate an image (~60s)</span>
                         </GlowingButton>
                       </div>
