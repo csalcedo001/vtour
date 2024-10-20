@@ -11,6 +11,9 @@ import { Menu, SearchIcon, Send } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from "react";
 
+import ApiReadyComponent from "@/app/api-ready-component";
+import {useComponentApis} from "@/app/component-api-provider";
+
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isButtonVisible, setButtonVisible] = useState(false);
@@ -153,7 +156,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-gray-100 light text-black">
       <div
-        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4'
+        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4 z-20'
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -251,18 +254,20 @@ export default function Dashboard() {
           {/* Action Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[
-              { title: "Create Video", description: "Generate a video with a replica", icon: Video, color: "text-pink-500" },
-              { title: "Create Replica", description: "Clone yourself in minutes", icon: Users, color: "text-orange-500" },
-              { title: "Create Conversation", description: "Talk with a replica in real-time", icon: MessageSquare, color: "text-purple-500" },
-              { title: "Create API Key", description: "Start building with an API Key", icon: Key, color: "text-blue-500" },
+              { id: "create-video", title: "Create Video", description: "Generate a video with a replica", icon: Video, color: "text-pink-500" },
+              { id: "create-replica", title: "Create Replica", description: "Clone yourself in minutes", icon: Users, color: "text-orange-500" },
+              { id: "create-conversation", title: "Create Conversation", description: "Talk with a replica in real-time", icon: MessageSquare, color: "text-purple-500" },
+              { id: "create-api-key", title: "Create API Key", description: "Start building with an API Key", icon: Key, color: "text-blue-500" },
             ].map((item, index) => (
-              <Card key={index} isPressable>
-                <CardBody className="flex flex-col items-start p-4">
-                  <item.icon className={`${item.color} w-8 h-8 mb-2`} />
-                  <h3 className="font-semibold">{item.title} →</h3>
-                  <p className="text-sm text-gray-500">{item.description}</p>
-                </CardBody>
-              </Card>
+              <ApiReadyComponent key={index} id={item.id} docstring={item.description} onPress={() => {console.log(item.title)}}>
+                <Card isPressable>
+                  <CardBody className="flex flex-col items-start p-4">
+                    <item.icon className={`${item.color} w-8 h-8 mb-2`} />
+                    <h3 className="font-semibold">{item.title} →</h3>
+                    <p className="text-sm text-gray-500">{item.description}</p>
+                  </CardBody>
+                </Card>
+              </ApiReadyComponent>
             ))}
           </div>
 
