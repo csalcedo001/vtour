@@ -12,13 +12,21 @@ export default function Page() {
   const [counter, setCounter] = useState<number>(0);
   const [docs, setDocs] = useState<string>('');
 
+  const instructions = `increment-counter
+increment-counter
+increment-counter
+increment-counter
+increment-counter`
+
   const incrementCounter = useCallback(() => {
     setCounter((prevCounter) => prevCounter + 1);
   }, []);
 
   async function programmaticallyIncrementCounter() {
-    for (const index of Array.from({length: 5}, (_, i) => i)) {
-      componentApis.clickComponent("increment-counter");
+    const instructionList = instructions.split("\n");
+
+    for (const instruction of instructionList) {
+      componentApis.executeInstruction(instruction);
 
       await new Promise(resolve => setTimeout(resolve, 200));
 
@@ -35,7 +43,7 @@ export default function Page() {
     <div className="flex flex-col items-center space-y-4">
       <div className="flex flex-row justify-center items-center space-x-4">
         <Button onPress={programmaticallyIncrementCounter}>
-          Programmatically increment counter 5 times
+          Programmatically increment counter 5 times by executing instructions
         </Button>
         <Button onPress={retrieveAndShowApiDescription}>
           Retrieve and show API descriptions

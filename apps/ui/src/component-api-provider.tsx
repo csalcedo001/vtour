@@ -1,15 +1,43 @@
-import { createContext, useContext, useRef, useCallback, ReactNode } from 'react';
+import {createContext, useContext, useRef, useCallback, ReactNode} from 'react';
 
 interface ComponentApiContextType {
   registerComponent: (id: string, docstring: string, onPress: () => void) => void;
   clickComponent: (id: string) => void;
   getComponentApiDescription: () => { [key: string]: string };
+
+  /**
+   * Executes an instruction.
+   *
+   * This is analogous to "running one line of code".
+   *
+   * An instruction can press call some function on some component, for example.
+   *
+   * The ISA here follows RISC design in spirit;
+   * each instruction can only call one API function in one component under the hood.
+   *
+   * Each instruction has a string return value (i.e., "destination register content").
+   *
+   * (Right now can only call the `onPress` callback)
+   *
+   * An instruction follows the following syntax:
+   * <id-of-the-component-on-which-to-invoke-the-onPress-callback>
+   *
+   * For example:
+   *
+   * ```asm
+   * counter-incrementer
+   * ```
+   *
+   * This type of instruction always returns "".
+   * @param instruction
+   */
+  executeInstruction: (instruction: string) => string;
 }
 
 const ComponentApiContext = createContext<ComponentApiContextType | undefined>(undefined);
 
-export function ComponentApiProvider({ children }: { children: ReactNode }) {
-  const componentsRef = useRef<Record<string, { docstring: string, callback: () => void}>>({});
+export function ComponentApiProvider({children}: { children: ReactNode }) {
+  const componentsRef = useRef<Record<string, { docstring: string, callback: () => void }>>({});
 
   // Function to register a component
   const registerComponent = useCallback((id: string, docstring: string, onPress: () => void) => {
@@ -27,7 +55,7 @@ export function ComponentApiProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const getComponentApiDescription = useCallback(() => {
-    const documentation: {[key: string]: string} = {};
+    const documentation: { [key: string]: string } = {};
 
     for (const key of Object.keys(componentsRef.current)) {
       documentation[key] = componentsRef.current[key].docstring;
@@ -36,8 +64,20 @@ export function ComponentApiProvider({ children }: { children: ReactNode }) {
     return documentation;
   }, []);
 
+  // instruction parsing and execution logic
+  const executeInstruction = useCallback((instruction: string) => {
+    instruction = instruction.trim();
+
+    const componentId = instruction;
+
+    componentsRef.current[componentId].callback();
+
+    return "";
+  }, []);
+
   return (
-    <ComponentApiContext.Provider value={{ registerComponent, clickComponent, getComponentApiDescription }}>
+    <ComponentApiContext.Provider
+      value={{registerComponent, clickComponent, getComponentApiDescription, executeInstruction}}>
       {children}
     </ComponentApiContext.Provider>
   );
