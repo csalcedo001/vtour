@@ -2,6 +2,7 @@ import {createContext, useContext, useRef, useCallback, ReactNode} from 'react';
 
 interface ComponentApiContextType {
   registerComponent: (id: string, docstring: string, onPress: () => void) => void;
+  unregisterComponent: (id: string) => void;
   clickComponent: (id: string) => void;
   getComponentApiDescription: () => { [key: string]: string };
 
@@ -47,6 +48,11 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     }
   }, []);
 
+  // Function to unregister a component
+  const unregisterComponent = useCallback((id: string) => {
+    delete componentsRef.current[id];
+  }, []);
+
   // Function to click a registered component
   const clickComponent = useCallback((id: string) => {
     if (componentsRef.current[id]) {
@@ -77,7 +83,7 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
 
   return (
     <ComponentApiContext.Provider
-      value={{registerComponent, clickComponent, getComponentApiDescription, executeInstruction}}>
+      value={{registerComponent, unregisterComponent, clickComponent, getComponentApiDescription, executeInstruction}}>
       {children}
     </ComponentApiContext.Provider>
   );

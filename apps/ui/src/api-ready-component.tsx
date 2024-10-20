@@ -7,12 +7,17 @@ export default function ApiReadyComponent({ id, onPress, docstring, children }: 
   onPress: () => void;
   children: ReactNode;
 }) {
-  const { registerComponent } = useComponentApis();
+  const { registerComponent, unregisterComponent } = useComponentApis();
 
   useEffect(() => {
     // Register the component with its ID and onPress function
     registerComponent(id, docstring, onPress);
-  }, [id, docstring, onPress, registerComponent]);
+
+    // Unregister the component on component unmount
+    return () => {
+      unregisterComponent(id);
+    };
+  }, [id, docstring, onPress, registerComponent, unregisterComponent]);
 
   return (
     <div onClick={onPress}>
