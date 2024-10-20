@@ -10,6 +10,63 @@ import { useTTS } from '@cartesia/cartesia-js/react';
 import OpenAI from "openai";
 import { error } from 'console';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { motion } from "framer-motion";
+
+export function AnimatedAvatar({ isSpeaking = false, imageSrc } : {
+  isSpeaking : boolean,
+  imageSrc: any
+}) {
+  return (
+    <motion.div
+      className="relative h-40 w-40"
+      animate={isSpeaking ? "speaking" : "idle"}
+      variants={{
+        speaking: {
+          scale: [1, 1.02, 1],
+          transition: {
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        },
+        idle: {
+          scale: 1,
+        }
+      }}
+    >
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        animate={isSpeaking ? "speaking" : "idle"}
+        variants={{
+          speaking: {
+            boxShadow: [
+              "0 0 10px 2px rgba(0, 255, 0, 0.3)",
+              "0 0 20px 4px rgba(0, 255, 0, 0.3)",
+              "0 0 10px 2px rgba(0, 255, 0, 0.3)"
+            ],
+            transition: {
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          },
+          idle: {
+            boxShadow: "0 0 0px 0px rgba(0, 255, 0, 0)"
+          }
+        }}
+      />
+      <div className="h-40 w-40 rounded-full overflow-hidden relative z-10">
+        <Image
+          src={imageSrc}
+          alt="avatar"
+          width={400}
+          height={400}
+          className="object-cover w-full h-full"
+        />
+      </div>
+    </motion.div>
+  );
+}
 
 const Home = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false)
@@ -119,16 +176,7 @@ const Home = () => {
       </div>
       {
         isAvatar && (
-          <div className='h-40 w-40 rounded-full overflow-hidden'>
-            <Image
-              // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
-              src={yoda}
-              alt='avatar'
-              width={400}
-              height={400}
-              className='object-cover w-full h-full'
-            />
-          </div>
+          <AnimatedAvatar isSpeaking={true} imageSrc={yoda}/>
         )
       }
       {
