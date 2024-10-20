@@ -2,11 +2,12 @@
 import goku from "@/app/goku.png";
 import scarlett from "@/app/scarlett.jpg";
 import yoda from "@/app/yoda.jpg";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Switch } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { Menu, SearchIcon } from 'lucide-react';
+import { Menu, SearchIcon, Send } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+
 
 const avatars = [
   {
@@ -81,14 +82,13 @@ export function AnimatedAvatar({
   );
 }
 
-
 // Menu section component
 const MenuSection = () => {
   const [selectedAvatar, setSelectedAvatar] = useState("Goku");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
 
   return (
-    <div className="w-[400px] h-[300px] bg-white rounded-xl mb-5 shadow-2xl">
+    <div className="w-[400px] min-h-[300px] bg-white rounded-xl mb-5 shadow-2xl">
       {/* Header */}
       <div className="bg-black flex items-center justify-center py-4 rounded-t-xl">
         <h3 className="text-xl font-medium text-white">Settings</h3>
@@ -128,6 +128,11 @@ const MenuSection = () => {
           <SelectItem key="Mandarin" value="Mandarin">Mandarin</SelectItem>
         </Select>
       </div>
+      <div className="px-10 my-5">
+        <Switch className="text-black">
+          Voice mode
+        </Switch>
+      </div>
     </div>
   );
 };
@@ -146,20 +151,27 @@ const Page = () => {
 
   return (
     <div className='min-h-screen w-full bg-white'>
+      <div>
         <Input
           className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
           classNames={{
-            base: "max-w-full sm:max-w-[40rem] h-10",
+            base: "max-w-full sm:max-w-[40rem] h-12",
             mainWrapper: "h-full",
             input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
             inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
           }}
           placeholder="Set your prompt here..."
           size="sm"
-          variant="faded"
+          variant="flat"
           isClearable={false}
-          type="search"
+          type="text"
+          endContent={
+            <Button isIconOnly variant="solid" color="default">
+              <Send strokeWidth={1.5}/>
+            </Button>
+          }
         />
+      </div>
       <div
         className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4'
         onMouseEnter={handleMouseEnter}
