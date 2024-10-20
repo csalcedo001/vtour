@@ -36,6 +36,7 @@ import scarlet from "@/app/scarlett.jpg";
 import OpenAI from "openai";
 import { useOnborda } from "onborda";
 import {useGlobalSingleton} from "@/app/global-singleton-provider";
+import {Input} from "@nextui-org/react";
 
 const AIMLAPI_API_KEY = "d6f3a75d17774b748a1945adf772c472";
 
@@ -350,14 +351,14 @@ const VirtualAssistant: React.FC = (
   return (
     <div className="fixed bottom-0 z-50 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4">
       <div className="flex items-center gap-3 flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
-        <input
+        <Input
           className="w-full outline-none"
           placeholder="Ask any question to the assistant!"
           onChange={(e) => setUserQuestion(e.target.value)}
           onKeyPress={handleKeyPress}
           value={userQuestion}
         />
-        <Button className="bg-white" onClick={handleAskAssistant}>
+        <Button variant="outline" color="primary" onClick={handleAskAssistant}>
           <Send />
         </Button>
       </div>

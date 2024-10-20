@@ -187,6 +187,7 @@ const Home = () => {
       setIsAvatar(true);
     }
   };
+
   return (
     <div className="flex flex-col items-end justify-end h-screen w-screen pr-4 pb-4">
       <div className="flex flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
