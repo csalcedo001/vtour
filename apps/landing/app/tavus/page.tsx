@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Folder, HelpCircle, Home, Key, Library, Menu, MessageSquare, PlayCircle, Settings, SidebarIcon, User, UserPlus, Users, Video } from "lucide-react";
 import Image from 'next/image';
 import { useState } from "react";
+import VirtualAssistant from '@/app/components/VirtualAssistant'
 
 import ApiReadyComponent from "@/app/api-ready-component";
 import {useComponentApis} from "@/app/component-api-provider";
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const [isButtonVisible, setButtonVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState(false);
+  const {  } = useComponentApis();
   
   const avatars = [
     {
@@ -94,6 +96,13 @@ export default function Dashboard() {
   const MenuSection = () => {
     const [selectedAvatar, setSelectedAvatar] = useState("Goku");
     const [selectedLanguage, setSelectedLanguage] = useState("English");
+    const [inputValue, setInputValue] = useState("");
+
+    const componentApis = useComponentApis();
+
+    const handleClick = () => {
+      componentApis.takeAction(inputValue)
+    }
 
     return (
       <div className="w-[400px] min-h-[300px] bg-white rounded-xl mb-5 shadow-2xl z-30">
@@ -141,6 +150,19 @@ export default function Dashboard() {
             Voice mode
           </Switch>
         </div>
+
+        <div className="mb-6">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className="border p-2 mr-2"
+            placeholder="Enter action"
+          />
+          <Button onClick={handleClick}>
+            Take Action
+          </Button>
+        </div>
       </div>
     );
   };
@@ -154,40 +176,6 @@ export default function Dashboard() {
   };
   return (
     <div className="flex h-screen bg-gray-100 light text-black">
-      <div
-        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4 z-20'
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {
-          isMenuVisible ? <MenuSection /> : <AnimatedAvatar
-            imageSrc={yoda}
-            isSpeaking={true}
-            isHovered={isButtonVisible}
-          />
-        }
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: isButtonVisible ? 1 : 0,
-            scale: isButtonVisible ? 1 : 0.8,
-            y: isButtonVisible ? 0 : 20
-          }}
-          transition={{
-            duration: 0.3,
-            ease: "easeOut"
-          }}
-        >
-          <Button
-            onClick={() => { setIsMenuVisible(!isMenuVisible) }}
-            className='rounded-full bg-gray-200'
-            variant="solid"
-            isIconOnly
-          >
-            <Menu className='text-black' size={15} />
-          </Button>
-        </motion.div>
-      </div>
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-md transition-all duration-300 overflow-hidden relative flex flex-col`}>
         <div className="p-4">
@@ -290,6 +278,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+        <VirtualAssistant/>
       </main>
     </div>
   )

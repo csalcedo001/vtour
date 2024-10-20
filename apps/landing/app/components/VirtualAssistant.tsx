@@ -7,6 +7,7 @@ import { Button, Input, Select, SelectItem, Switch } from "@nextui-org/react";
 import goku from "@/app/goku.png";
 import scarlett from "@/app/scarlett.jpg";
 import yoda from "@/app/yoda.jpg";
+import {useComponentApis} from "@/app/component-api-provider";
 
 // Define avatar configurations
 const avatars = [
@@ -141,12 +142,14 @@ const VirtualAssistant: React.FC = () => {
   const [isButtonVisible, setButtonVisible] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("Yoda");
   const [userInput, setUserInput] = useState("");
+  const componentApis = useComponentApis();
 
   const handleMouseEnter = () => setButtonVisible(true);
   const handleMouseLeave = () => setButtonVisible(false);
-  
   const handleSendMessage = () => {
     if (userInput.trim()) {
+      componentApis.takeAction(userInput)    
+
       // Handle message sending logic here
       console.log("Sending message:", userInput);
       setUserInput("");
