@@ -1,13 +1,10 @@
 "use client";
-import { Button, Card, CardBody } from "@nextui-org/react";
-import { Link } from "@nextui-org/react";
-import { Video, Users, MessageSquare, Key, Home, PlayCircle, Folder, UserPlus, Library, User, Settings, HelpCircle, SidebarIcon } from "lucide-react";
 import goku from "@/app/goku.png";
 import scarlett from "@/app/scarlett.jpg";
 import yoda from "@/app/yoda.jpg";
-import { Input, Select, SelectItem, Switch } from "@nextui-org/react";
+import { Button, Card, CardBody, Link, Select, SelectItem, Switch } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { Menu, SearchIcon, Send } from 'lucide-react';
+import { Folder, HelpCircle, Home, Key, Library, Menu, MessageSquare, PlayCircle, Settings, SidebarIcon, User, UserPlus, Users, Video } from "lucide-react";
 import Image from 'next/image';
 import { useState } from "react";
 
@@ -15,6 +12,8 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isButtonVisible, setButtonVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState(false);
+  
   const avatars = [
     {
       "name": "Yoda",
@@ -153,7 +152,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-gray-100 light text-black">
       <div
-        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4'
+        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4 z-10'
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -178,7 +177,6 @@ export default function Dashboard() {
         >
           <Button
             onClick={() => { setIsMenuVisible(!isMenuVisible) }}
-
             className='rounded-full bg-gray-200'
             variant="solid"
             isIconOnly
@@ -226,7 +224,7 @@ export default function Dashboard() {
           </Button>
         </div>
       </aside>
-
+      
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
         {/* Toggle Button */}
