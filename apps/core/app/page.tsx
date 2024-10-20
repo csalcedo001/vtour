@@ -1,20 +1,43 @@
 "use client";
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { AudioLines, HelpCircleIcon, HomeIcon, MessagesSquareIcon, Send, SettingsIcon } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
-import yoda from "@/app/yoda.jpg"
-import { Input } from '@/components/ui/input';
-import { useTTS } from '@cartesia/cartesia-js/react';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  AudioLines,
+  HelpCircleIcon,
+  HomeIcon,
+  MessagesSquareIcon,
+  Send,
+  SettingsIcon,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import yoda from "@/app/yoda.jpg";
+import { Input } from "@/components/ui/input";
+import { useTTS } from "@cartesia/cartesia-js/react";
 import OpenAI from "openai";
-import { error } from 'console';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { error } from "console";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { motion } from "framer-motion";
 
-export function AnimatedAvatar({ isSpeaking = false, imageSrc } : {
-  isSpeaking : boolean,
-  imageSrc: any
+export function AnimatedAvatar({
+  isSpeaking = false,
+  imageSrc,
+}: {
+  isSpeaking: boolean;
+  imageSrc: any;
 }) {
   return (
     <motion.div
@@ -26,12 +49,12 @@ export function AnimatedAvatar({ isSpeaking = false, imageSrc } : {
           transition: {
             duration: 1.5,
             repeat: Infinity,
-            ease: "easeInOut"
-          }
+            ease: "easeInOut",
+          },
         },
         idle: {
           scale: 1,
-        }
+        },
       }}
     >
       <motion.div
@@ -42,17 +65,17 @@ export function AnimatedAvatar({ isSpeaking = false, imageSrc } : {
             boxShadow: [
               "0 0 10px 2px rgba(0, 255, 0, 0.3)",
               "0 0 20px 4px rgba(0, 255, 0, 0.3)",
-              "0 0 10px 2px rgba(0, 255, 0, 0.3)"
+              "0 0 10px 2px rgba(0, 255, 0, 0.3)",
             ],
             transition: {
               duration: 1.5,
               repeat: Infinity,
-              ease: "easeInOut"
-            }
+              ease: "easeInOut",
+            },
           },
           idle: {
-            boxShadow: "0 0 0px 0px rgba(0, 255, 0, 0)"
-          }
+            boxShadow: "0 0 0px 0px rgba(0, 255, 0, 0)",
+          },
         }}
       />
       <div className="h-40 w-40 rounded-full overflow-hidden relative z-10">
@@ -69,26 +92,24 @@ export function AnimatedAvatar({ isSpeaking = false, imageSrc } : {
 }
 
 const Home = () => {
-  const [isOpenMenu, setIsOpenMenu] = useState(false)
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isAvatar, setIsAvatar] = useState(true);
   const [userQuestion, setUserQuestion] = useState<string>("");
 
-  const openai = new OpenAI(
-    {
-      apiKey: "SET_YOUR_API_KEY",
-      dangerouslyAllowBrowser: true,
-    }
-  );
+  const openai = new OpenAI({
+    apiKey: "sk-proj-RWySAooD00jl3DQzsrjNT3BlbkFJXZUsNFdTsbNtxTUSgIA6",
+    dangerouslyAllowBrowser: true,
+  });
 
   const tts = useTTS({
     // TODO: Change to .env
-    apiKey: "SET_YOUR_API_KEY",
+    apiKey: "d84367d3-9d3a-4c02-9edf-2ee554318dde",
     sampleRate: 44100,
-  })
+  });
   const [text, setText] = useState("");
 
   interface ChatMessage {
-    role: 'system' | 'user' | 'assistant';
+    role: "system" | "user" | "assistant";
     content: string;
   }
 
@@ -101,8 +122,8 @@ const Home = () => {
     // Input validation
     if (!prompt?.trim()) {
       return {
-        answer: '',
-        error: new Error('Prompt cannot be empty')
+        answer: "",
+        error: new Error("Prompt cannot be empty"),
       };
     }
 
@@ -112,7 +133,7 @@ const Home = () => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant."
+            content: "You are a helpful assistant.",
           },
           {
             role: "user",
@@ -123,20 +144,21 @@ const Home = () => {
         max_tokens: 1000,
       });
 
-      const answer = completion.choices[0]?.message?.content || '';
+      const answer = completion.choices[0]?.message?.content || "";
       setText(answer);
       await handlePlay();
       return {
-        answer
+        answer,
       };
     } catch (error) {
       // Proper error handling
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error('Error in askAssistant:', errorMessage);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error in askAssistant:", errorMessage);
 
       return {
-        answer: '',
-        error: error instanceof Error ? error : new Error(errorMessage)
+        answer: "",
+        error: error instanceof Error ? error : new Error(errorMessage),
       };
     }
   };
@@ -154,83 +176,85 @@ const Home = () => {
 
     // Immediately play the audio. (You can also buffer in advance and play later.)
     await tts.play();
-  }
+  };
 
   const toggleOpenMenu = () => {
     if (isAvatar) {
       setIsAvatar(false);
-      setIsOpenMenu(true)
+      setIsOpenMenu(true);
     } else {
       setIsOpenMenu(false);
       setIsAvatar(true);
     }
-  }
+  };
   return (
-    <div className='flex flex-col items-end justify-end h-screen w-screen pr-4 pb-4'>
-      <div className='flex flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1'>
+    <div className="flex flex-col items-end justify-end h-screen w-screen pr-4 pb-4">
+      <div className="flex flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
         {/* TODO: Copy Claude.ai animation          */}
-        <input className='w-full outline-none' placeholder='Ask any question to Yoda!' />
-        <Button>
+        <input
+          className="w-full outline-none"
+          placeholder="Ask any question to Yoda!"
+          onChange={(e) => setUserQuestion(e.target.value)}
+        />
+        <Button onClick={() => askAssistant(userQuestion)}>
           <Send />
         </Button>
       </div>
-      {
-        isAvatar && (
-          <AnimatedAvatar isSpeaking={true} imageSrc={yoda}/>
-        )
-      }
-      {
-        isOpenMenu && (
-          <Card className='w-max h-max mb-4 mr-4'>
-            <CardHeader>
-              <CardTitle>vTour</CardTitle>
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select an option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yoda">Yoda</SelectItem>
-                  <SelectItem value="goku">Goku</SelectItem>
-                  <SelectItem value="scarlet">Scarlet Johanson</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardHeader>
-            <CardContent>
-              <Image
-                // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
-                src={yoda}
-                alt='vTour'
-                width={320} // 20% cut from 400
-                height={400}
-                className='object-cover rounded-md'
-                style={{ objectFit: 'cover' }} // Ensuring object cover is applied
-              />
-            </CardContent>
-            <CardFooter className='flex justify-between w-full'>
-              <Button variant="ghost" className='flex flex-col items-center h-18'>
-                <HomeIcon />
-                <span className='text-sm font-medium'>Home</span>
-              </Button>
-              <Button variant="ghost" className='flex flex-col items-center h-18'>
-                <MessagesSquareIcon />
-                <span className='text-sm font-medium'>Messages</span>
-              </Button>
-              <Button variant="ghost" className='flex flex-col items-center h-18'>
-                <HelpCircleIcon />
-                <span className='text-sm font-medium'>Help</span>
-              </Button>
-              <Button variant="ghost" className='flex flex-col items-center h-18'>
-                <SettingsIcon />
-                <span className='text-sm font-medium'>Settings</span>
-              </Button>
-            </CardFooter>
-          </Card>
-        )}
-      <Button className='rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110' onClick={toggleOpenMenu}>
-        <AudioLines className='w-6 h-6' />
+      {isAvatar && <AnimatedAvatar isSpeaking={true} imageSrc={yoda} />}
+      {isOpenMenu && (
+        <Card className="w-max h-max mb-4 mr-4">
+          <CardHeader>
+            <CardTitle>vTour</CardTitle>
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select an option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yoda">Yoda</SelectItem>
+                <SelectItem value="goku">Goku</SelectItem>
+                <SelectItem value="scarlet">Scarlet Johanson</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent>
+            <Image
+              // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
+              src={yoda}
+              alt="vTour"
+              width={320} // 20% cut from 400
+              height={400}
+              className="object-cover rounded-md"
+              style={{ objectFit: "cover" }} // Ensuring object cover is applied
+            />
+          </CardContent>
+          <CardFooter className="flex justify-between w-full">
+            <Button variant="ghost" className="flex flex-col items-center h-18">
+              <HomeIcon />
+              <span className="text-sm font-medium">Home</span>
+            </Button>
+            <Button variant="ghost" className="flex flex-col items-center h-18">
+              <MessagesSquareIcon />
+              <span className="text-sm font-medium">Messages</span>
+            </Button>
+            <Button variant="ghost" className="flex flex-col items-center h-18">
+              <HelpCircleIcon />
+              <span className="text-sm font-medium">Help</span>
+            </Button>
+            <Button variant="ghost" className="flex flex-col items-center h-18">
+              <SettingsIcon />
+              <span className="text-sm font-medium">Settings</span>
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+      <Button
+        className="rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110"
+        onClick={toggleOpenMenu}
+      >
+        <AudioLines className="w-6 h-6" />
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
