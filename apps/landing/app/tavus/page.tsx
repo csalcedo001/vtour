@@ -187,7 +187,6 @@ export default function Dashboard() {
           </Button>
         </motion.div>
       </div>
-
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-md transition-all duration-300 overflow-hidden relative flex flex-col`}>
         <div className="p-4">
