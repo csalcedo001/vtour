@@ -1,21 +1,21 @@
 import SelectMenuWithStatus from "../components/SelectMenuWithStatus";
-import type { OptionWithStatus } from "../components/SelectMenuWithStatus";
+import type {OptionWithStatus} from "../components/SelectMenuWithStatus";
 import SelectMenu from "../components/SelectMenu";
 import {useCallback, useEffect, useState} from "react";
 import GlowingButton from "../components/GlowingButton";
-import { XCircleIcon } from "@heroicons/react/24/solid";
+import {XCircleIcon} from "@heroicons/react/24/solid";
 import TrainModel from "./TrainModel";
 import AlertWithDismiss from "../components/AlertWithDissmiss";
-import { useOnborda } from "onborda";
-import {Image} from "@nextui-org/react";
+import {useOnborda} from "onborda";
+import {Image, Select, SelectItem} from "@nextui-org/react";
 import {useGlobalSingleton} from "@/app/global-singleton-provider";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
-  { id: 1, name: "Copy styles" },
-  { id: 2, name: "Write your prompts" },
+  {id: 1, name: "Copy styles"},
+  {id: 2, name: "Write your prompts"},
   // { id: 3, name: "Diseña tu sesión de fotos" },
-  { id: 3, name: "Train your model 👩" },
+  {id: 3, name: "Train your model 👩"},
 ];
 
 interface GeneratedImages {
@@ -33,15 +33,16 @@ interface GenerateImagesProps {
   copyPrompt?: null;
 }
 
-const GenerateImages = ({
-  imageToCopy,
-  setImageToCopy,
-  formImage,
-  setFormImage,
-  //   description,
-  //   setDescription,
-  copyPrompt,
-}: GenerateImagesProps) => {
+const GenerateImages = (
+  {
+    imageToCopy,
+    setImageToCopy,
+    formImage,
+    setFormImage,
+    //   description,
+    //   setDescription,
+    copyPrompt,
+  }: GenerateImagesProps) => {
   const [mode, setMode] = useState(options[1]);
   const [personModelOptions, setPersonModelOptions] = useState<
     OptionWithStatus[]
@@ -62,7 +63,7 @@ const GenerateImages = ({
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
 
-  const { startOnborda } = useOnborda();
+  const {startOnborda} = useOnborda();
   const handleStartOnborda = () => {
     console.log("startOnborda");
     startOnborda("tour1");
@@ -98,7 +99,6 @@ const GenerateImages = ({
           <div>
             <h3
               className="text-lg font-medium leading-6 text-white"
-              id="onborda-step1"
             >
               Generate your images
             </h3>
@@ -121,7 +121,7 @@ const GenerateImages = ({
                   label=""
                   options={options}
                   selected={mode}
-                  setSelected={setMode}
+                  // setSelected={setMode}
                 />
               </div>
               {/* COPY STYLE FORM */}
@@ -240,24 +240,6 @@ const GenerateImages = ({
               {mode.id === 2 && (
                 <>
                   <div className="sm:col-span-3">
-                    {personModelOptions && (
-                      <>
-                        <label
-                          htmlFor="description"
-                          className="block text-sm font-medium text-white"
-                        >
-                          Select a model
-                        </label>
-                        <SelectMenuWithStatus
-                          label=""
-                          options={personModelOptions}
-                          selected={personModel}
-                          setSelected={setPersonModel}
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className="sm:col-span-3" id="onborda-step2">
                     <label
                       htmlFor="prompt"
                       className="block text-sm font-medium text-white"
@@ -266,9 +248,9 @@ const GenerateImages = ({
                     </label>
                     <div className="mt-1">
                       <textarea
+                        id="onborda-step1"
                         rows={4}
                         name="text"
-                        id="text"
                         onChange={(e) => globalSingleton.setImagePrompt(e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         defaultValue={""}
@@ -300,7 +282,7 @@ const GenerateImages = ({
                 </>
               )}
               {/* TRAIN YOUR MODEL */}
-              {mode.id === 3 && <TrainModel />}
+              {mode.id === 3 && <TrainModel/>}
             </div>
           </div>
         </div>
@@ -309,9 +291,9 @@ const GenerateImages = ({
             <div className="flex justify-start">
               <div className="fixed left-8 bottom-5 z-40 flex w-full bg-transparent">
                 <GlowingButton
-                //   onClick={handleSubmit}
-                //   isLoading={isLoading || isLoadingGeneratedImageWithPrompt}
+                  id="onborda-step2"
                 >
+
                   <span>Generate an image (~60s)</span>
                 </GlowingButton>
               </div>
