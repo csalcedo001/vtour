@@ -17,7 +17,8 @@ const Home = () => {
   
   const openai = new OpenAI(
   {
-    apiKey: "SET_YOUR_API_KEY"
+    apiKey: "SET_YOUR_API_KEY",
+    dangerouslyAllowBrowser: true,
   }
   );
 
