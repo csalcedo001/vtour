@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Folder, HelpCircle, Home, Key, Library, Menu, MessageSquare, PlayCircle, Settings, SidebarIcon, User, UserPlus, Users, Video } from "lucide-react";
 import Image from 'next/image';
 import { useState } from "react";
-import VirtualAssistant from '@/app/components/VirtualAssistant'
+import NewVirtualAssistant from '@/app/components/NewVirtualAssistant'
 
 import ApiReadyComponent from "@/app/api-ready-component";
 import {useComponentApis} from "@/app/component-api-provider";
@@ -278,7 +278,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <VirtualAssistant/>
+        <NewVirtualAssistant/>
       </main>
     </div>
   )

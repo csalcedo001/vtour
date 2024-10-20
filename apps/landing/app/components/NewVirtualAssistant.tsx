@@ -13,6 +13,7 @@ import { useComponentApis } from "../component-api-provider";
 import { useGlobalSingleton } from "../global-singleton-provider";
 import { generateImage } from "../utils";
 
+
 const avatars = [
   {
     name: "Yoda",
@@ -171,6 +172,9 @@ const NewVirtualAssistant = () => {
 
   const { startOnborda } = useOnborda();
   const globalSingleton = useGlobalSingleton();
+
+  const componentApis = useComponentApis();
+
   useEffect(() => {
     const handleToolEffect = async () => {
       if (tool === "") return;
@@ -208,11 +212,12 @@ const NewVirtualAssistant = () => {
   const handleMouseLeave = () => {
     setButtonVisible(false);
   };
-
   const handleSendMessage = () => {
     if (userInput.trim()) {
-      // Handle message sending logic here
-      console.log("Sending message:", userInput);
+      componentApis.findComponent(userInput)
+        .then((id) => console.log('Found component:', id))
+        .catch((error) => console.error("Error finding component:", error));
+
       setUserInput("");
       setIsOnboarding(false);
     }
@@ -292,6 +297,7 @@ const NewVirtualAssistant = () => {
   const handleAskAssistant = async () => {
     if (userInput.trim()) {
       const question = userInput;
+      handleSendMessage();
       setUserInput(""); // Clear the question after asking
       await askAssistant(question);
     }
@@ -321,38 +327,37 @@ const NewVirtualAssistant = () => {
   };
 
   return (
-    <div className="relative w-full h-full dark">
-      <div>
-        <Input
-          className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
-          classNames={{
-            base: "max-w-full sm:max-w-[40rem] h-12",
-            mainWrapper: "h-full",
-            input:
-              "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-            inputWrapper:
-              "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-          }}
-          placeholder="Set your prompt here..."
-          size="sm"
-          variant="flat"
-          isClearable={false}
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          endContent={
-            <Button
-              isIconOnly
-              variant="solid"
-              color="default"
-              onClick={handleSendMessage}
-            >
-              <Send strokeWidth={1.5} />
-            </Button>
-          }
-        />
-      </div>
+    <div className="fixed bottom-0 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4">
+      <Input
+        className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
+        classNames={{
+          base: "max-w-full sm:max-w-[40rem] h-12",
+          mainWrapper: "h-full",
+          input:
+            "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+          inputWrapper:
+            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+        }}
+        placeholder="Set your prompt here..."
+        size="sm"
+        variant="flat"
+        isClearable={false}
+        type="text"
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        onKeyPress={handleKeyPress}
+        endContent={
+          <Button
+            isIconOnly
+            variant="solid"
+            color="default"
+            onClick={handleSendMessage}
+          >
+            <Send strokeWidth={1.5} />
+          </Button>
+        }
+      />
+      
       <div
         className="fixed bottom-5 right-5 flex flex-col items-end -space-y-4"
         onMouseEnter={handleMouseEnter}
