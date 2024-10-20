@@ -97,16 +97,15 @@ const Home = () => {
   const [userQuestion, setUserQuestion] = useState<string>("");
 
   const openai = new OpenAI({
-    apiKey: "sk-proj-RWySAooD00jl3DQzsrjNT3BlbkFJXZUsNFdTsbNtxTUSgIA6",
+    apiKey: "",
     dangerouslyAllowBrowser: true,
   });
 
   const tts = useTTS({
     // TODO: Change to .env
-    apiKey: "d84367d3-9d3a-4c02-9edf-2ee554318dde",
+    apiKey: "",
     sampleRate: 44100,
   });
-  const [text, setText] = useState("");
 
   interface ChatMessage {
     role: "system" | "user" | "assistant";
@@ -133,7 +132,8 @@ const Home = () => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant.",
+            content:
+              "You are a helpful assistant. For onboarding a user to a new platform. Keep your answers short and concise.",
           },
           {
             role: "user",
@@ -141,12 +141,12 @@ const Home = () => {
           },
         ],
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 300,
       });
 
       const answer = completion.choices[0]?.message?.content || "";
-      setText(answer);
-      await handlePlay();
+      console.log("answer", answer);
+      await handlePlay({ text: answer });
       return {
         answer,
       };
@@ -163,7 +163,7 @@ const Home = () => {
     }
   };
 
-  const handlePlay = async () => {
+  const handlePlay = async ({ text }: { text: string }) => {
     // Begin buffering the audio.
     const response = await tts.buffer({
       model_id: "sonic-english",
