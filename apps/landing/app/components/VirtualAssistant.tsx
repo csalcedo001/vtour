@@ -37,6 +37,7 @@ import OpenAI from "openai";
 import { useOnborda } from "onborda";
 import { useGlobalSingleton } from "@/app/global-singleton-provider";
 import { Input } from "@nextui-org/react";
+import { useComponentApis } from "@/app/component-api-provider";
 
 const AIMLAPI_API_KEY = "d6f3a75d17774b748a1945adf772c472";
 
@@ -170,6 +171,7 @@ const VirtualAssistant: React.FC = (
   const [userQuestion, setUserQuestion] = useState<string>("");
   const [tool, setTool] = useState<string>("");
   const [selectedCharacter, setSelectedCharacter] = useState("yoda");
+  const { getComponentApiDescription } = useComponentApis();
 
   const { startOnborda } = useOnborda();
 
@@ -360,8 +362,8 @@ const VirtualAssistant: React.FC = (
   return (
     <div className="fixed bottom-0 z-50 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4">
       <div className="flex items-center gap-3 flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1">
-        <Input
-          className="w-full outline-none"
+        <input
+          className="w-full bg-black text-white outline-none focus:outline-none border-transparent focus:border-transparent focus:ring-0"
           placeholder="Ask any question to the assistant!"
           onChange={(e) => setUserQuestion(e.target.value)}
           onKeyPress={handleKeyPress}

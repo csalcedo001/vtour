@@ -9,6 +9,7 @@ import AlertWithDismiss from "../components/AlertWithDissmiss";
 import { useOnborda } from "onborda";
 import { Image, Select, SelectItem } from "@nextui-org/react";
 import { useGlobalSingleton } from "@/app/global-singleton-provider";
+import ApiReadyComponent from "@/app/api-ready-component";
 // import ModalOverlay from "@/components/ModalOverlay";
 // import { Prompt } from "@/types";
 const options = [
@@ -251,9 +252,15 @@ const GenerateImages = ({
                   <div className="pt-5">
                     <div className="flex justify-start">
                       <div className="fixed left-8 z-40 flex w-full bg-transparent">
-                        <GlowingButton id="onborda-step2">
-                          <span>Generate an image (~60s)</span>
-                        </GlowingButton>
+                        <ApiReadyComponent
+                          id="onborda-step2"
+                          docstring="Generate an image (~60s)"
+                          onPress={() => {}}
+                        >
+                          <GlowingButton>
+                            <span>Generate an image (~60s)</span>
+                          </GlowingButton>
+                        </ApiReadyComponent>
                       </div>
                     </div>
                   </div>
