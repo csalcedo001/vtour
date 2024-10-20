@@ -11,6 +11,11 @@ export default function Page() {
 
   const [counter, setCounter] = useState<number>(0);
   const [docs, setDocs] = useState<string>('');
+  const [inputValue, setInputValue] = useState("")
+
+  const handleClick = () => {
+    componentApis.takeAction(inputValue)
+  }
 
   const instructions = `increment-counter
 increment-counter
@@ -90,6 +95,20 @@ increment-counter`
         </Button>
         <Button onClick={() => componentApis.goToComponent('api-description')}>
           Go To api-descriptions
+        </Button>
+      </div>
+
+      {/* New Input Section */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          className="border p-2 mr-2"
+          placeholder="Enter action"
+        />
+        <Button onClick={handleClick}>
+          Take Action
         </Button>
       </div>
     </div>

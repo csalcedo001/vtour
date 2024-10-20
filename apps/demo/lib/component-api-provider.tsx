@@ -6,6 +6,7 @@ interface ComponentApiContextType {
   clickComponent: (id: string) => void;
   getComponentApiDescription: () => { [key: string]: string };
   goToComponent: (id: string) => void; // Ensure this is included
+  takeAction: (text: string) => void;
 
   /**
    * Executes an instruction.
@@ -89,6 +90,30 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     return "";
   }, []);
 
+  const takeAction = useCallback((instruction: string) => {
+    fetch('/api/instruction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        instruction: instruction,
+        components: Object.keys(componentsRef.current).map(id => ({
+          id: id,
+          description: componentsRef.current[id].docstring
+        }))
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }, []);
+    
+
   return (
     <ComponentApiContext.Provider
     value={{
@@ -98,6 +123,7 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
       getComponentApiDescription,
       executeInstruction,
       goToComponent, // Include the new function in the context value
+      takeAction,
     }}>
       {children}
     </ComponentApiContext.Provider>
