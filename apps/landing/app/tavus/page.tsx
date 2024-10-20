@@ -2,13 +2,192 @@
 import { Button, Card, CardBody } from "@nextui-org/react";
 import { Link } from "@nextui-org/react";
 import { Video, Users, MessageSquare, Key, Home, PlayCircle, Folder, UserPlus, Library, User, Settings, HelpCircle, SidebarIcon } from "lucide-react";
+import goku from "@/app/goku.png";
+import scarlett from "@/app/scarlett.jpg";
+import yoda from "@/app/yoda.jpg";
+import { Input, Select, SelectItem, Switch } from "@nextui-org/react";
+import { motion } from "framer-motion";
+import { Menu, SearchIcon, Send } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from "react";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isButtonVisible, setButtonVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const avatars = [
+    {
+      "name": "Yoda",
+      "src": yoda
+    },
+    {
+      "name": "Goku",
+      "src": goku
+    },
+    {
+      "name": "Scarlett Johanson",
+      "src": scarlett
+    }
+  ]
 
+  const AnimatedAvatar = ({
+    isSpeaking = false,
+    imageSrc,
+    isHovered,
+  }: {
+    isSpeaking: boolean;
+    imageSrc: any;
+    isHovered: boolean;
+  }) => {
+    return (
+      <motion.div
+        className=""
+        animate={
+          isHovered
+            ? {
+              y: -20,
+              transition: { duration: 0.3 }
+            }
+            : {
+              y: 0,
+              transition: { duration: 0.3 }
+            }
+        }
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          animate={isSpeaking ? "speaking" : "idle"}
+          variants={{
+            speaking: {
+              boxShadow: [
+                "0 0 10px 2px rgba(255, 255, 255, 0.3)",
+                "0 0 20px 4px rgba(255, 255, 255, 0.3)",
+                "0 0 10px 2px rgba(255, 255, 255, 0.3)",
+              ],
+              transition: {
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            },
+            idle: {
+              boxShadow: "0 0 0px 0px rgba(255, 255, 255, 0)"
+            },
+          }}
+        />
+        <div className="h-40 w-40 rounded-full overflow-hidden relative z-10">
+          <Image
+            src={imageSrc}
+            alt="avatar"
+            width={400}
+            height={400}
+            className="object-cover w-full h-full"
+          />
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Menu section component
+  const MenuSection = () => {
+    const [selectedAvatar, setSelectedAvatar] = useState("Goku");
+    const [selectedLanguage, setSelectedLanguage] = useState("English");
+
+    return (
+      <div className="w-[400px] min-h-[300px] bg-white rounded-xl mb-5 shadow-2xl z-30">
+        {/* Header */}
+        <div className="bg-black flex items-center justify-center py-4 rounded-t-xl">
+          <h3 className="text-xl font-medium text-white">Settings</h3>
+        </div>
+
+        {/* Avatar selection */}
+        <div className="light px-10 py-8 flex gap-5">
+          <div>
+            <Image src={avatars.find(a => a.name === selectedAvatar)?.src || avatars[0].src} alt="avatar" className="h-20 w-20 rounded-full" />
+          </div>
+          <div className="flex-grow">
+            <Select
+              label="Select an avatar"
+              className="max-w-lg light"
+              value={selectedAvatar}
+              onChange={(value) => setSelectedAvatar(value.target.value)}
+            >
+              {avatars.map((avatar) => (
+                <SelectItem key={avatar.name} value={avatar.name}>
+                  {avatar.name}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        {/* Language selection */}
+        <div className="light px-10 flex flex-col gap-5">
+          <Select
+            label="Select language"
+            className="max-w-lg light"
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+          >
+            <SelectItem key="Spanish" value="Spanish">Spanish</SelectItem>
+            <SelectItem key="English" value="English">English</SelectItem>
+            <SelectItem key="Mandarin" value="Mandarin">Mandarin</SelectItem>
+          </Select>
+        </div>
+        <div className="px-10 my-5">
+          <Switch className="text-black">
+            Voice mode
+          </Switch>
+        </div>
+      </div>
+    );
+  };
+
+  const handleMouseEnter = () => {
+    setButtonVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setButtonVisible(false);
+  };
   return (
     <div className="flex h-screen bg-gray-100 light text-black">
+      <div
+        className='fixed bottom-5 right-5 flex flex-col items-end -space-y-4'
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {
+          isMenuVisible ? <MenuSection /> : <AnimatedAvatar
+            imageSrc={yoda}
+            isSpeaking={true}
+            isHovered={isButtonVisible}
+          />
+        }
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{
+            opacity: isButtonVisible ? 1 : 0,
+            scale: isButtonVisible ? 1 : 0.8,
+            y: isButtonVisible ? 0 : 20
+          }}
+          transition={{
+            duration: 0.3,
+            ease: "easeOut"
+          }}
+        >
+          <Button
+            onClick={() => { setIsMenuVisible(!isMenuVisible) }}
+
+            className='rounded-full bg-gray-200'
+            variant="solid"
+            isIconOnly
+          >
+            <Menu className='text-black' size={15} />
+          </Button>
+        </motion.div>
+      </div>
+
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-md transition-all duration-300 overflow-hidden relative flex flex-col`}>
         <div className="p-4">
@@ -17,7 +196,7 @@ export default function Dashboard() {
         <nav className="mt-6 flex-grow">
           <SidebarSection title="Home" icon={Home} active />
           <SidebarSection title="VIDEO">
-            <SidebarItem icon={PlayCircle} label="Video Generation" />
+              <SidebarItem icon={PlayCircle} label="Video Generation"/>
             <SidebarItem icon={Folder} label="Video Library" />
           </SidebarSection>
           <SidebarSection title="REPLICA">
@@ -52,13 +231,13 @@ export default function Dashboard() {
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
         {/* Toggle Button */}
-        <Button 
-          variant="light" 
+        <Button
+          variant="light"
           isIconOnly
           className="m-4"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          <SidebarIcon className="h-6 w-6"/>
+          <SidebarIcon className="h-6 w-6" />
         </Button>
 
         <div className="p-8">
@@ -133,9 +312,8 @@ function SidebarItem({ icon: Icon, label, active }: { icon: React.ComponentType<
       as="a"
       href="#"
       variant={active ? "flat" : "light"}
-      className={`w-full justify-start rounded-none ${
-        active ? 'bg-purple-100 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
-      }`}
+      className={`w-full justify-start rounded-none ${active ? 'bg-purple-100 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
+        }`}
       startContent={Icon && <Icon className="h-5 w-5" />}
     >
       {label}
