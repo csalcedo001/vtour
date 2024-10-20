@@ -265,7 +265,7 @@ const GenerateImages = ({
                       </>
                     )}
                   </div>
-                  <div className="sm:col-span-3">
+                  <div className="sm:col-span-3" id="onborda-step2">
                     <label
                       htmlFor="prompt"
                       className="block text-sm font-medium text-white"

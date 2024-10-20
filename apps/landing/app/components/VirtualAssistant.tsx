@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/app/components/ui/button";
@@ -28,6 +28,37 @@ import {
 import { useTTS } from "@cartesia/cartesia-js/react";
 import yoda from "@/app/yoda.jpg";
 import OpenAI from "openai";
+import { useOnborda } from "onborda";
+
+const tools = [
+  {
+    name: "generate-images",
+    description: "Generate images with AI using a prompt",
+  },
+  {
+    name: "onboard-user",
+    description: "Onboard a user to the platform",
+  },
+];
+
+//  You can create a Model and with it generate images based on a prompt. Like a photographer.
+// Always keep your answers short and concise. You have the following tools at hand always use the most appropriate one:
+
+const SYSTEM_PROMPT = `You are a helpful assistant that talks like master Yoda for the platform FotosAI which is an AI Photo Studio. after you answer the question, choose the tool that best answers the question and output the word json followed by the tool name and the arguments.
+
+These are the tools:
+
+${tools.map((tool) => `- ${tool.name}: ${tool.description}`).join("\n")}
+
+choose the tool that best answers the question and output the word json followed by the tool name and the arguments like this:
+
+{
+  "tool": "generate-images",
+  "args": {
+    "prompt": "a beautiful image of a cat",
+  }
+}
+`;
 
 export function AnimatedAvatar({
   isSpeaking = false,
@@ -104,6 +135,23 @@ const VirtualAssistant: React.FC = (
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isAvatar, setIsAvatar] = useState(true);
   const [userQuestion, setUserQuestion] = useState<string>("");
+  const [tool, setTool] = useState<string>("");
+  const { startOnborda } = useOnborda();
+
+  const handleStartOnborda = () => {
+    console.log("startOnborda");
+    startOnborda("tour1");
+  };
+
+  useEffect(() => {
+    if (tool === "onboard-user") {
+      const timer = setTimeout(() => {
+        handleStartOnborda();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [tool]);
 
   const openai = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
@@ -126,12 +174,11 @@ const VirtualAssistant: React.FC = (
 
     try {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-2024-08-06",
         messages: [
           {
             role: "system",
-            content:
-              "You are a helpful assistant. For onboarding a user to a new platform. Keep your answers short and concise.",
+            content: SYSTEM_PROMPT,
           },
           {
             role: "user",
@@ -139,15 +186,35 @@ const VirtualAssistant: React.FC = (
           },
         ],
         temperature: 0.7,
-        max_tokens: 300,
+        max_tokens: 1000,
       });
 
       const answer = completion.choices[0]?.message?.content || "";
       console.log("answer", answer);
-      await handlePlay({ text: answer });
-      return {
-        answer,
-      };
+
+      // Safely split the answer into text and JSON parts
+      let textAnswer = answer;
+      let jsonAnswer = "";
+
+      const jsonIndex = answer.lastIndexOf("json");
+      if (jsonIndex !== -1) {
+        textAnswer = answer.slice(0, jsonIndex).trim();
+        jsonAnswer = answer.slice(jsonIndex + 4).trim();
+      }
+
+      // Validate JSON if present
+      // let parsedJson = null;
+      if (jsonAnswer) {
+        try {
+          if (jsonAnswer.includes("onboard-user")) {
+            setTool("onboard-user");
+          }
+        } catch (error) {
+          console.warn("Failed to parse JSON from answer:", error);
+        }
+      }
+
+      await handlePlay({ text: textAnswer });
     } catch (error) {
       // Proper error handling
       const errorMessage =
@@ -167,7 +234,7 @@ const VirtualAssistant: React.FC = (
       model_id: "sonic-english",
       voice: {
         mode: "id",
-        id: "a0e99841-438c-4a64-b679-ae501e7d6091",
+        id: "9121bf7e-1e22-4c06-a3dc-6ebd3d3bb1ec",
       },
       transcript: text,
     });
