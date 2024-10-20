@@ -1,101 +1,177 @@
-import Image from "next/image";
+"use client";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { AudioLines, HelpCircleIcon, HomeIcon, MessagesSquareIcon, Send, SettingsIcon } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
+import yoda from "@/app/yoda.jpg"
+import { Input } from '@/components/ui/input';
+import { useTTS } from '@cartesia/cartesia-js/react';
+import OpenAI from "openai";
+import { error } from 'console';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+const Home = () => {
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
+  const [isAvatar, setIsAvatar] = useState(true);
+  const [userQuestion, setUserQuestion] = useState<string>("");
+  
+  const openai = new OpenAI(
+  {
+    apiKey: "SET_YOUR_API_KEY"
+  }
   );
+
+  const tts = useTTS({
+    // TODO: Change to .env
+    apiKey: "SET_YOUR_API_KEY",
+    sampleRate: 44100,
+  })
+  const [text, setText] = useState("");
+
+  interface ChatMessage {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }
+
+  interface ChatResponse {
+    answer: string;
+    error?: Error;
+  }
+
+  const askAssistant = async (prompt: string): Promise<ChatResponse> => {
+    // Input validation
+    if (!prompt?.trim()) {
+      return {
+        answer: '',
+        error: new Error('Prompt cannot be empty')
+      };
+    }
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: prompt.trim(),
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 1000,
+      });
+
+      const answer = completion.choices[0]?.message?.content || '';
+      setText(answer);
+      await handlePlay();
+      return {
+        answer
+      };
+    } catch (error) {
+      // Proper error handling
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Error in askAssistant:', errorMessage);
+
+      return {
+        answer: '',
+        error: error instanceof Error ? error : new Error(errorMessage)
+      };
+    }
+  };
+
+  const handlePlay = async () => {
+    // Begin buffering the audio.
+    const response = await tts.buffer({
+      model_id: "sonic-english",
+      voice: {
+        mode: "id",
+        id: "a0e99841-438c-4a64-b679-ae501e7d6091",
+      },
+      transcript: text,
+    });
+
+    // Immediately play the audio. (You can also buffer in advance and play later.)
+    await tts.play();
+  }
+
+  const toggleOpenMenu = () => {
+    if (isAvatar) {
+      setIsAvatar(false);
+      setIsOpenMenu(true)
+    } else {
+      setIsOpenMenu(false);
+      setIsAvatar(true);
+    }
+  }
+  return (
+    <div className='flex flex-col items-end justify-end h-screen w-screen pr-4 pb-4'>
+      <div className='flex flex-row border border-gray-400 w-1/2 absolute right-1/4 rounded-lg py-1 pl-4 pr-1'>
+        {/* TODO: Copy Claude.ai animation          */}
+        <input className='w-full outline-none' placeholder='Ask any question to Yoda!' />
+        <Button>
+          <Send />
+        </Button>
+      </div>
+      {
+        isAvatar && (
+          <div className='h-40 w-40 rounded-full overflow-hidden'>
+            <Image
+              // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
+              src={yoda}
+              alt='avatar'
+              width={400}
+              height={400}
+              className='object-cover w-full h-full'
+            />
+          </div>
+        )
+      }
+      {
+        isOpenMenu && (
+          <Card className='w-max h-max mb-4 mr-4'>
+            <CardHeader>
+              <CardTitle>vTour</CardTitle>
+              <CardDescription>Ms. Yoda</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Image
+                // src={"https://cdn.prod.website-files.com/63b2f566abde4cad39ba419f%2F66bc17f4f868bc9ce77ddf71_Option-1-Website-Main-Demo-Carter-Silent-poster-00001.jpg"}
+                src={yoda}
+                alt='vTour'
+                width={320} // 20% cut from 400
+                height={400}
+                className='object-cover rounded-md'
+                style={{ objectFit: 'cover' }} // Ensuring object cover is applied
+              />
+            </CardContent>
+            <CardFooter className='flex justify-between w-full'>
+              <Button variant="ghost" className='flex flex-col items-center h-18'>
+                <HomeIcon />
+                <span className='text-sm font-medium'>Home</span>
+              </Button>
+              <Button variant="ghost" className='flex flex-col items-center h-18'>
+                <MessagesSquareIcon />
+                <span className='text-sm font-medium'>Messages</span>
+              </Button>
+              <Button variant="ghost" className='flex flex-col items-center h-18'>
+                <HelpCircleIcon />
+                <span className='text-sm font-medium'>Help</span>
+              </Button>
+              <Button variant="ghost" className='flex flex-col items-center h-18'>
+                <SettingsIcon />
+                <span className='text-sm font-medium'>Settings</span>
+              </Button>
+            </CardFooter>
+          </Card>
+        )}
+      <Button className='rounded-full w-10 h-10 transition-transform duration-200 hover:scale-110' onClick={toggleOpenMenu}>
+        <AudioLines className='w-6 h-6' />
+      </Button>
+    </div>
+  )
 }
+
+export default Home
