@@ -101,7 +101,7 @@ export default function Dashboard() {
     const componentApis = useComponentApis();
 
     const handleClick = () => {
-      componentApis.takeAction(inputValue)
+      componentApis.findComponent(inputValue)
     }
 
     return (

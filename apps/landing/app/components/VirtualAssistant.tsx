@@ -148,10 +148,10 @@ const VirtualAssistant: React.FC = () => {
   const handleMouseLeave = () => setButtonVisible(false);
   const handleSendMessage = () => {
     if (userInput.trim()) {
-      componentApis.takeAction(userInput)    
+      componentApis.findComponent(userInput)
+        .then((id) => console.log('Found component:', id))
+        .catch((error) => console.error("Error finding component:", error));
 
-      // Handle message sending logic here
-      console.log("Sending message:", userInput);
       setUserInput("");
     }
   };

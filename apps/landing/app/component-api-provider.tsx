@@ -1,12 +1,13 @@
-import {createContext, useContext, useRef, useCallback, ReactNode} from 'react';
+import {useState, createContext, useContext, useRef, useCallback, ReactNode} from 'react';
 
 interface ComponentApiContextType {
-  registerComponent: (id: string, docstring: string, onPress: () => void, ref: React.RefObject<HTMLDivElement>) => void; // Updated signature
+  registerComponent: (id: string, docstring: string, onPress: () => void, ref: React.RefObject<HTMLDivElement>) => void;
   unregisterComponent: (id: string) => void;
   clickComponent: (id: string) => void;
   getComponentApiDescription: () => { [key: string]: string };
   goToComponent: (id: string) => void; // Ensure this is included
-  takeAction: (text: string) => void;
+  findComponent: (instruction: string) => Promise<string | null>;
+  currentComponent: string | null
 
   /**
    * Executes an instruction.
@@ -41,9 +42,12 @@ const ComponentApiContext = createContext<ComponentApiContextType | undefined>(u
 
 export function ComponentApiProvider({children}: { children: ReactNode }) {
   const componentsRef = useRef<Record<string, { docstring: string, callback: () => void, ref: React.RefObject<HTMLDivElement> }>>({});
+  const [currentComponent, setCurrentComponent] = useState<string | null>(null); // Add state for current component
 
   // Function to register a component
   const registerComponent = useCallback((id: string, docstring: string, onPress: () => void, ref: React.RefObject<HTMLDivElement>) => {
+    console.log('Registering:', id)
+    console.log('componentsRef:', componentsRef)
     componentsRef.current[id] = {
       docstring: docstring,
       callback: onPress,
@@ -74,8 +78,13 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
   }, []);
 
   const goToComponent = useCallback((id: string) => {
+    console.log(id)
+    console.log(componentsRef.current)
+    console.log(componentsRef.current[id])
     if (componentsRef.current[id] && componentsRef.current[id].ref.current) {
       componentsRef.current[id].ref.current.focus();
+      setCurrentComponent(id);
+      console.log('setting current component to', id)
     }
   }, []);
 
@@ -90,8 +99,8 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     return "";
   }, []);
 
-  const takeAction = useCallback((instruction: string) => {
-    fetch('/api/instruction', {
+  const findComponent = useCallback((instruction: string) => {
+    return fetch('/api/instruction', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -106,10 +115,12 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Success:', data);
+      goToComponent(data.componentId);
+      return data; // Assuming the response contains an 'id' field
     })
     .catch((error) => {
       console.error('Error:', error);
+      throw new Error('Failed to find component'); // Throw another error
     });
   }, []);
     
@@ -123,7 +134,8 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
       getComponentApiDescription,
       executeInstruction,
       goToComponent, // Include the new function in the context value
-      takeAction,
+      findComponent,
+      currentComponent,
     }}>
       {children}
     </ComponentApiContext.Provider>
