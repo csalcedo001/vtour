@@ -82,7 +82,7 @@ export function ComponentApiProvider({children}: { children: ReactNode }) {
     console.log(componentsRef.current)
     console.log(componentsRef.current[id])
     if (componentsRef.current[id] && componentsRef.current[id].ref.current) {
-      componentsRef.current[id].ref.current.focus();
+      // componentsRef.current[id].ref.current.focus();
       setCurrentComponent(id);
       console.log('setting current component to', id)
     }

@@ -50,7 +50,7 @@ const ApiReadyComponent = forwardRef(({ id, onPress, docstring, children }: {
     <>
       {isModalOpen && (
         <div
-          className="fixed inset-0 w-screen h-screen bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 w-screen h-screen bg-black bg-opacity-50 z-30"
           onClick={handleCloseModal}
         />
       )}
@@ -58,7 +58,7 @@ const ApiReadyComponent = forwardRef(({ id, onPress, docstring, children }: {
         ref={componentRef}
         tabIndex={-1}
         onClick={handleOnClick}
-        className={`${isModalOpen && 'z-50'}`}
+        className={`${isModalOpen && 'z-40'}`}
       >
         {children}
       </div>

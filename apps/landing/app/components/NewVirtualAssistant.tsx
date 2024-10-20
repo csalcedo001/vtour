@@ -327,7 +327,7 @@ const NewVirtualAssistant = () => {
   };
 
   return (
-    <div className="fixed bottom-0 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4">
+    <div className="fixed bottom-0 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4 z-50">
       <Input
         className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
         classNames={{
@@ -357,7 +357,7 @@ const NewVirtualAssistant = () => {
           </Button>
         }
       />
-      
+
       <div
         className="fixed bottom-5 right-5 flex flex-col items-end -space-y-4"
         onMouseEnter={handleMouseEnter}
