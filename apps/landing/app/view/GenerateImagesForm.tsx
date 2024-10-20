@@ -277,10 +277,10 @@ const GenerateImages = ({
                         rows={4}
                         name="text"
                         id="text"
-                        onChange={(e) => setPrompt(e.target.value)}
+                        // onChange={(e) => setPrompt(e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        defaultValue={""}
-                        value={prompt}
+                        // defaultValue={""}
+                        // value={prompt}
                         placeholder="{{modelo}} with a hat and a red shirt on the beach"
                       />
                     </div>
@@ -297,10 +297,10 @@ const GenerateImages = ({
                         rows={4}
                         name="text"
                         id="text"
-                        onChange={(e) => setNegativePrompt(e.target.value)}
+                        // onChange={(e) => setNegativePrompt(e.target.value)}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        defaultValue={""}
-                        value={negativePrompt}
+                        // defaultValue={""}
+                        // value={negativePrompt}
                         placeholder=""
                       />
                     </div>
@@ -340,7 +340,7 @@ const GenerateImages = ({
                         name="lora-input"
                         id="lora-input"
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        defaultValue={0.85}
+                        // defaultValue={0.85}
                         value={loraScale}
                         onChange={(e) => setLoraScale(Number(e.target.value))}
                       />
@@ -350,7 +350,7 @@ const GenerateImages = ({
                         min="0"
                         max="1"
                         name="lora-slider"
-                        defaultValue={0.85}
+                        // defaultValue={0.85}
                         value={loraScale}
                         onChange={(e) => setLoraScale(Number(e.target.value))}
                         step="0.01"
@@ -374,7 +374,7 @@ const GenerateImages = ({
                         max="1"
                         step={0.01}
                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        defaultValue={0.8}
+                        // defaultValue={0.8}
                         value={promptStrength}
                         onChange={(e) =>
                           setPromptStrength(Number(e.target.value))

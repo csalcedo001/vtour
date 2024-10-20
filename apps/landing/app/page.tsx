@@ -1,7 +1,8 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import VirtualAssistant from "@/app/components/VirtualAssistant";
 import GenerateImagesForm from "./view/GenerateImagesForm";
 import GalleryArea from "./view/GalleryArea";
 import Image from "next/image";
@@ -9,6 +10,14 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 export default function Home() {
+  useEffect(() => {
+    fetch("/api/hello")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("hello world", data);
+      });
+  }, []);
+
   return (
     <div>
       <Disclosure as="nav" className="fixed top-0 left-0 right-0 bg-black">
@@ -222,6 +231,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <VirtualAssistant />
       </main>
     </div>
   );
