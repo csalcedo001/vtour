@@ -9,17 +9,18 @@ import { Input } from '@/components/ui/input';
 import { useTTS } from '@cartesia/cartesia-js/react';
 import OpenAI from "openai";
 import { error } from 'console';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Home = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false)
   const [isAvatar, setIsAvatar] = useState(true);
   const [userQuestion, setUserQuestion] = useState<string>("");
-  
+
   const openai = new OpenAI(
-  {
-    apiKey: "SET_YOUR_API_KEY",
-    dangerouslyAllowBrowser: true,
-  }
+    {
+      apiKey: "SET_YOUR_API_KEY",
+      dangerouslyAllowBrowser: true,
+    }
   );
 
   const tts = useTTS({
@@ -135,7 +136,16 @@ const Home = () => {
           <Card className='w-max h-max mb-4 mr-4'>
             <CardHeader>
               <CardTitle>vTour</CardTitle>
-              <CardDescription>Ms. Yoda</CardDescription>
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select an option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yoda">Yoda</SelectItem>
+                  <SelectItem value="goku">Goku</SelectItem>
+                  <SelectItem value="scarlet">Scarlet Johanson</SelectItem>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent>
               <Image
