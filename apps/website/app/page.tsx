@@ -27,11 +27,26 @@ export default function LandingPage() {
     checkLoginStatus()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle waitlist registration here
-    console.log('Registered email:', email)
-    setEmail('')
+    try {
+      const response = await fetch('/api/join-waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to join waitlist');
+      }
+
+      console.log('Registered email:', email);
+      setEmail('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   const scrollToContent = () => {
