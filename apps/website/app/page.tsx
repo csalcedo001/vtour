@@ -5,11 +5,13 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Mic, ChevronDown } from 'lucide-react'
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ChevronDown } from 'lucide-react'
+import Image from 'next/image'
+import logo from '@/public/logo.png'
 
 export default function LandingPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [, setIsLoggedIn] = useState(false)
   const [email, setEmail] = useState('')
 
   const { ref: ref1, inView: inView1 } = useInView({ triggerOnce: true, threshold: 0.5 })
@@ -43,11 +45,11 @@ export default function LandingPage() {
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-10">
-        <div className="flex items-center space-x-2">
-          <Mic className="h-8 w-8 text-blue-400" />
-          <span className="text-xl font-bold text-blue-400">vTour</span>
+        <div className="flex items-center space-x-2 px-5">
+          <Image src={logo} alt='vTour' width={80} />
+          <span className="text-3xl font-medium text-white">vTour</span>
         </div>
-        {isLoggedIn ? (
+        {/* {isLoggedIn ? (
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
@@ -56,15 +58,15 @@ export default function LandingPage() {
           <Button variant="outline" className="bg-transparent border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black">
             Join the Waitlist
           </Button>
-        )}
+        )} */}
       </nav>
 
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-blue-800/20 pointer-events-none"></div>
-        <div className="text-center mb-8 z-10">
-          <h1 className="text-6xl font-bold mb-6 pb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
-            The Voice Onboarding Agent.
+        <div className="text-center mb-8 z-10 px-10">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 pb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
+            Meet the AI Voice Onboarding Agent.
           </h1>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto flex space-x-2 mb-8">
             <Input
