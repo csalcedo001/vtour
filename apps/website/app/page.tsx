@@ -44,8 +44,8 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-10">
         <div className="flex items-center space-x-2">
-          <Mic className="h-8 w-8 text-cyan-400" />
-          <span className="text-xl font-bold text-cyan-400">vTour</span>
+          <Mic className="h-8 w-8 text-blue-400" />
+          <span className="text-xl font-bold text-blue-400">vTour</span>
         </div>
         {isLoggedIn ? (
           <Avatar>
@@ -53,17 +53,18 @@ export default function LandingPage() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         ) : (
-          <Button variant="outline" className="bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black">
+          <Button variant="outline" className="bg-transparent border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black">
             Join the Waitlist
           </Button>
         )}
       </nav>
 
       {/* Hero Section */}
-      <section className="h-screen flex flex-col justify-center items-center relative bg-gradient-to-br from-black via-cyan-950/10 to-purple-950/10">
-        <div className="text-center">
-          <h1 className="text-6xl font-bold mb-6 text-white">
-            The Voice Onboarding Agent
+      <section className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-blue-800/20 pointer-events-none"></div>
+        <div className="text-center mb-8 z-10">
+          <h1 className="text-6xl font-bold mb-6 pb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
+            The Voice Onboarding Agent.
           </h1>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto flex space-x-2 mb-8">
             <Input
@@ -72,12 +73,25 @@ export default function LandingPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-grow bg-white/10 border-cyan-400 text-white placeholder-gray-400"
+              className="flex-grow bg-blue-900/20 border-blue-400 text-white placeholder-blue-200/50"
             />
-            <Button type="submit" className="bg-cyan-400 hover:bg-cyan-300 text-black font-semibold">Register</Button>
+            <Button type="submit" className="bg-blue-500 hover:bg-blue-400 text-black font-semibold">Join the waitlist</Button>
           </form>
         </div>
-        <button onClick={scrollToContent} className="absolute bottom-8 animate-bounce text-cyan-400">
+
+        {/* Demo Video Section */}
+        <div className="w-full max-w-4xl mx-auto aspect-video bg-blue-900/10 rounded-lg overflow-hidden border border-blue-400/30 mb-12 z-10">
+          <video
+            className="w-full h-full object-cover"
+            controls
+            poster="/placeholder.svg?height=720&width=1280"
+          >
+            <source src="/placeholder.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <button onClick={scrollToContent} className="absolute bottom-8 animate-bounce text-blue-400 z-10">
           <ChevronDown className="h-8 w-8" />
         </button>
       </section>
@@ -89,12 +103,15 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 100 }}
           animate={inView1 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="py-20 text-center"
+          className="py-20 text-center relative overflow-hidden"
         >
-          <h2 className="text-3xl font-semibold mb-4 text-cyan-400">Revolutionize Your Onboarding</h2>
-          <p className="max-w-2xl mx-auto text-gray-300">
-            vTour uses cutting-edge AI to create personalized voice-guided tours for your product or service.
-          </p>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl font-semibold mb-4 text-blue-400">Revolutionize Your Onboarding</h2>
+            <p className="max-w-2xl mx-auto text-blue-100">
+              vTour uses cutting-edge AI to create personalized voice-guided tours for your product or service.
+            </p>
+          </div>
         </motion.section>
 
         <motion.section
@@ -102,12 +119,15 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 100 }}
           animate={inView2 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="py-20 text-center bg-white/5"
+          className="py-20 text-center relative overflow-hidden"
         >
-          <h2 className="text-3xl font-semibold mb-4 text-cyan-400">Engage Users Like Never Before</h2>
-          <p className="max-w-2xl mx-auto text-gray-300">
-            Our AI adapts to each user, providing a tailored experience that boosts engagement and retention.
-          </p>
+          <div className="absolute inset-0 bg-gradient-to-l from-blue-900/10 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl font-semibold mb-4 text-blue-400">Engage Users Like Never Before</h2>
+            <p className="max-w-2xl mx-auto text-blue-100">
+              Our AI adapts to each user, providing a tailored experience that boosts engagement and retention.
+            </p>
+          </div>
         </motion.section>
 
         <motion.section
@@ -115,61 +135,54 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 100 }}
           animate={inView3 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="py-20 text-center"
+          className="py-20 text-center relative overflow-hidden"
         >
-          <h2 className="text-3xl font-semibold mb-4 text-cyan-400">Seamless Integration</h2>
-          <p className="max-w-2xl mx-auto text-gray-300">
-            Easily integrate vTour into your existing platforms and watch your user experience transform.
-          </p>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl font-semibold mb-4 text-blue-400">Seamless Integration</h2>
+            <p className="max-w-2xl mx-auto text-blue-100">
+              Easily integrate vTour into your existing platforms and watch your user experience transform.
+            </p>
+          </div>
         </motion.section>
 
-        {/* Video Section */}
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto aspect-video bg-white/5 flex items-center justify-center rounded-lg overflow-hidden border border-cyan-400/30">
-            <Button variant="outline" size="lg" className="flex items-center space-x-2 bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black">
-              <Play className="h-6 w-6" />
-              <span>Watch Demo</span>
-            </Button>
-          </div>
-        </section>
-
         {/* Footer */}
-        <footer className="bg-white/5 py-10">
+        <footer className="bg-blue-900/10 py-10">
           <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-semibold mb-4 text-cyan-400">About</h3>
+              <h3 className="font-semibold mb-4 text-blue-400">About</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Our Story</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Team</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Our Story</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Team</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Careers</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4 text-cyan-400">Product</h3>
+              <h3 className="font-semibold mb-4 text-blue-400">Product</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">FAQ</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Features</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Pricing</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">FAQ</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4 text-cyan-400">Resources</h3>
+              <h3 className="font-semibold mb-4 text-blue-400">Resources</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Support</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Blog</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Documentation</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Support</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4 text-cyan-400">Legal</h3>
+              <h3 className="font-semibold mb-4 text-blue-400">Legal</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Cookie Policy</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Privacy Policy</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Terms of Service</a></li>
+                <li><a href="#" className="text-blue-200 hover:text-white">Cookie Policy</a></li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 text-center text-gray-400">
+          <div className="mt-8 text-center text-blue-300">
             <p>&copy; 2024 vTour. All rights reserved.</p>
           </div>
         </footer>
