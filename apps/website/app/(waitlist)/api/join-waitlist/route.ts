@@ -14,9 +14,9 @@ export async function POST(request: Request) {
     const message = {
       to: email,
       from: process.env.RESEND_SENDER_EMAIL as string,
-      subject: 'Welcome to the Waitlist!',
+      subject: 'Welcome to the waitlist!',
       // text: `Hello! You've been added to the waitlist. We'll notify you once the app is ready.`,
-      html: `<strong>Hello!</strong><p>You've been added to the waitlist. We'll notify you once the app is ready.</p>`,
+      html: `<strong>Hello!</strong><p>This is Cesar from vTour. You've been added to the waitlist. We'll notify you once the app is ready.</p><p>Cheers,</p><p>Cesar<br/>vTour</p>`,
     };
 
     await resend.emails.send(message);
