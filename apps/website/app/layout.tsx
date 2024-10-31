@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "vTour",
-  description: "The AI Onboarding Agent",
+  description: "The Open Source AI Onboarding Agent",
 };
 
 export default function RootLayout({

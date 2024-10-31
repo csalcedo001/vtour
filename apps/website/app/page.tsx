@@ -81,7 +81,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-blue-800/20 pointer-events-none"></div>
         <div className="text-center mb-8 z-10 px-10">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 pb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
-            Meet the AI Voice Onboarding Agent.
+            The Open Source AI Onboarding Agent.
           </h1>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto flex space-x-2 mb-8">
             <Input
