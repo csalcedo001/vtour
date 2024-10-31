@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Mic, Play, ChevronDown } from 'lucide-react'
+import { Mic, ChevronDown } from 'lucide-react'
 
 export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
