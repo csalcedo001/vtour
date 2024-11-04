@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
-import logo from '@/public/logo.png'
+import logo from '@/public/logo.svg'
 
 export default function LandingPage() {
   const [, setIsLoggedIn] = useState(false)
@@ -61,7 +61,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-10">
         <div className="flex items-center space-x-2 px-5">
-          <Image src={logo} alt='vTour' width={80} />
+          <Image src={logo} alt='vTour' width={60} />
           <span className="text-3xl font-medium text-white">vTour</span>
         </div>
         {/* {isLoggedIn ? (
