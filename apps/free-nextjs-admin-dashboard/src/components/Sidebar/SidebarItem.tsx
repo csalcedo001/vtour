@@ -2,13 +2,9 @@ import React from "react";
 import Link from "next/link";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
 import { usePathname } from "next/navigation";
-
 import ApiReadyComponent from "@/api-ready-component";
-import {useComponentApis} from "@/component-api-provider";
 
 const SidebarItem = ({ item, pageName, setPageName }: any) => {
-  const {  } = useComponentApis();
-
   const handleClick = () => {
     const updatedPageName =
       pageName !== item.label.toLowerCase() ? item.label.toLowerCase() : "";

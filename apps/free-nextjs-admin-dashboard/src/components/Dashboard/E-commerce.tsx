@@ -6,7 +6,6 @@ import ChartTwo from "../Charts/ChartTwo";
 import ChatCard from "../Chat/ChatCard";
 import TableOne from "../Tables/TableOne";
 import CardDataStats from "../CardDataStats";
-import ApiReadyComponent from "@/api-ready-component";
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
   ssr: false,

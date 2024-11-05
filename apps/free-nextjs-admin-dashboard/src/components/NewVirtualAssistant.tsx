@@ -321,14 +321,14 @@ const NewVirtualAssistant = () => {
   return (
     <div className="fixed bottom-0 right-0 flex flex-col items-end justify-end w-screen pr-4 pb-4 z-50">
       <Input
-        className="light hidden md:flex absolute bottom-0 left-1/3 mb-3"
+        className="light hidden md:flex absolute bottom-0 pl-2 left-1/3 mb-3 rounded-full hover:bg-white hover:text-black hover:border hover:border-gray-200"
         classNames={{
           base: "max-w-full sm:max-w-[40rem] h-12",
           mainWrapper: "h-full",
           input:
             "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
           inputWrapper:
-            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+            "h-full font-normal text-default-500 bg-default-400/50 dark:bg-default-500/50",
         }}
         placeholder="Set your prompt here..."
         size="sm"
