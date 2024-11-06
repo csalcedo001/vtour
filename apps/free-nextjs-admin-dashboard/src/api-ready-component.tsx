@@ -1,5 +1,4 @@
-import React, { useEffect, useImperativeHandle, forwardRef, ReactNode, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useImperativeHandle, forwardRef, ReactNode, useRef } from 'react';
 import { useComponentApis } from './component-api-provider';
 
 const ApiReadyComponent = forwardRef(({ id, onPress, docstring, children }: {
@@ -8,36 +7,19 @@ const ApiReadyComponent = forwardRef(({ id, onPress, docstring, children }: {
   onPress: () => void;
   children: ReactNode;
 }, ref) => {
-  const { registerComponent, unregisterComponent, currentComponent } = useComponentApis();
+  const { registerComponent, unregisterComponent, currentComponent, openModal, closeModal } = useComponentApis();
   const componentRef = useRef<HTMLDivElement>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [componentBounds, setComponentBounds] = useState<{ top: number; left: number; width: number; height: number }>({
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0,
-  });
 
   const handleOnClick = () => {
-    const rect = componentRef.current!.getBoundingClientRect();
-    setComponentBounds({
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-    });
-    setIsModalOpen(true);
-  };
-  
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+    // Open the modal overlay via the context's openModal function, passing `children` as content
+    openModal(id, children);
   };
 
   useEffect(() => {
     if (currentComponent === id) {
-      setIsModalOpen(true);
+      openModal(id, children);  // Opens the modal if this component is the current one
     }
-  }, [currentComponent, id]);
+  }, [currentComponent, id, openModal, children]);
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -48,53 +30,24 @@ const ApiReadyComponent = forwardRef(({ id, onPress, docstring, children }: {
   }));
 
   useEffect(() => {
+    // Register the component with the context on mount and unregister on unmount
     registerComponent(id, docstring, onPress, componentRef);
 
     return () => {
       unregisterComponent(id);
+      closeModal();  // Close the modal overlay when the component is unmounted
     };
-  }, [id, docstring, onPress, registerComponent, unregisterComponent]);
-
-  const modalOverlay = (
-    <>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 9999,
-        }}
-        onClick={handleCloseModal}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          top: componentBounds.top,
-          left: componentBounds.left,
-          width: componentBounds.width,
-          height: componentBounds.height,
-          zIndex: 10000,
-        }}
-      >
-        {children}
-      </div>
-    </>
-  );
+  }, [id, docstring, onPress, registerComponent, unregisterComponent, closeModal]);
 
   return (
-    <>
-      {isModalOpen && createPortal(modalOverlay, document.body)}
-      <div
-        ref={componentRef}
-        tabIndex={-1}
-        onClick={handleOnClick}
-        style={{ position: 'relative', zIndex: 'auto' }}
-      >
-        {children}
-      </div>
-    </>
+    <div
+      ref={componentRef}
+      tabIndex={-1}
+      onClick={handleOnClick}
+      style={{ position: 'relative', zIndex: 'auto' }}
+    >
+      {children}
+    </div>
   );
 });
 
